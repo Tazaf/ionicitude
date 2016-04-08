@@ -32,9 +32,9 @@
   "author": "Mathias Oberson  <obersonmathias@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/Tazaf/ionic-wikitude-module/issues"
+    "url": "https://github.com/Tazaf/ionic-wikitude-module/issues"
   },
-  "homepage": "https://gitlab.com/Tazaf/ionic-wikitude-module#README",
+  "homepage": "https://github.com/Tazaf/ionic-wikitude-module/blob/master/README.md",
   "devDependencies": {
     "bower": "^1.7.9",
     "gulp": "^3.9.1",
