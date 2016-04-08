@@ -30,6 +30,7 @@
   "ignore": [
     "node_modules",
     "src",
+    "tests",
     ".bowerrc",
     ".gitignore",
     "gulpfile.js",

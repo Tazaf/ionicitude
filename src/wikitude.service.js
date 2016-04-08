@@ -23,7 +23,8 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 		deviceSupportsFeatures: false,
 		initService: initService,
 		launchAR: launchAR,
-		setup: setup
+		setup: setup,
+		executeActionCall: executeActionCall
 	};
 
 	return service;
@@ -91,7 +92,7 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 	 */
 	function launchAR(world_ref) {
 		if (!world_ref) world_ref = 'main';
-		if (service.deviceSupportsFeatures) {
+		if (settings.deviceSupportsFeatures) {
 			var q = $q.defer();
 			console.log('launch');
 			plugin.get().loadARchitectWorld(function (success) {
