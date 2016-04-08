@@ -1,0 +1,38 @@
+{
+  "name": "ionic-wikitude-module",
+  "authors": [
+    "Tazaf <obersonmathias@gmail.com>"
+  ],
+  "description": "AngularJS module for using the Wikitude cordova plugin in an Ionic project.",
+  "main": "ionic-wikitude-module.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "angular",
+    "Angular",
+    "angularjs",
+    "AngularJS",
+    "module",
+    "ionic",
+    "Ionic",
+    "wikitude",
+    "Wikitude",
+    "ar",
+    "augmented",
+    "reality",
+    "plugin",
+    "cordova",
+    "Cordova"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "www/lib",
+    "test",
+    "tests"
+  ]
+}
