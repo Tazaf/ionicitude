@@ -28,8 +28,15 @@
   "license": "MIT",
   "homepage": "",
   "ignore": [
-    "*",
-    "!dist"
+    "node_modules",
+    "src",
+    ".bowerrc",
+    ".gitignore",
+    "gulpfile.js",
+    "LICENSE",
+    "logo.png",
+    "package.json",
+    "README.md"
   ],
   "repository": {
     "type": "git",
