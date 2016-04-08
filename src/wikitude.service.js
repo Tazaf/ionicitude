@@ -6,8 +6,7 @@ angular
 	.module('WikitudeModule')
 	.factory('Wikitude', Wikitude);
 
-Wikitude.$inject = ['$q', 'plugin', 'settings', 'protocl', 'lib'];
-
+/* @ngInject */
 function Wikitude($q, plugin, settings, protocol, lib) {
 	/**
 	 * This is a simple flag to prevent calling the initService() public method twice.
@@ -24,17 +23,67 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 		deviceSupportsFeatures: false,
 		initService: initService,
 		launchAR: launchAR,
-		settings: settings
+		setup: setup
 	};
 
 	return service;
 
 	////////////////////
 
-	////////////////////
+	/**
+	 * TODO : vérifier le commentaire
+	 * Checks if the device supports the features needed by the ARchitect World.
+	 * These features are set with the reqFeatures property of the Wikitude service.
+	 * The result of this check is available through the deviceSupportsFeatures property of the Wikitude service
+	 * for it to be used later (alerting the user that he's/she's device is not compatible, for instance).
+	 * For conveniency, the result of the check is returned by the function.
+	 */
+	function checkDevice() {
+		var q = $q.defer();
+		plugin.get().isDeviceSupported(function (success) {
+			service.deviceSupportsFeatures = true;
+			q.resolve(success);
+		}, function (error) {
+			service.deviceSupportsFeatures = false;
+			q.reject(error);
+		}, settings.reqFeatures);
+		return q.promise;
+	}
 
-	function settings(settings) {
-		//TODO : remplir la méthode. Elle doit permettre de modifier n'importe laquelle des valeurs du service settings.
+	/**
+	 * TODO : commenter la méthode
+	 */
+	function initService(settings) {
+		console.log(settings);
+		if (!initialized) {
+			console.log('init service starting');
+			initialized = true;
+			var callback = executeActionCall;
+			if (customCallback()) callback = settings.onUrlInvokeCallback;
+			plugin.get().setOnUrlInvokeCallback(callback);
+			if (doDeviceCheck()) {
+				console.log('checking device');
+				checkDevice();
+			} else {
+				console.log('device check skipped due to init settings');
+			}
+		}
+
+		/**
+		 * Checks if you defined a custom onUrlInvokeCallback in the initService function's 'settings' argument.
+		 * @returns {boolean}
+		 */
+		function customCallback() {
+			return settings && settings.hasOwnProperty('onUrlInvokeCallback') && typeof settings.onUrlInvokeCallback === 'function';
+		}
+
+		/**
+		 * Checks if you defined in the initService function's 'settings' argument that the device checking should be done.
+		 * @returns {boolean}
+		 */
+		function doDeviceCheck() {
+			return !(settings && settings.hasOwnProperty('doDeviceCheck') && settings.doDeviceCheck === false);
+		}
 	}
 
 	/**
@@ -57,6 +106,16 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 	}
 
 	/**
+	 * TODO : commenter la méthode
+	 * @param settings
+	 */
+	function setup(settings) {
+		//TODO : remplir la méthode. Elle doit permettre de modifier n'importe laquelle des valeurs du service settings.
+	}
+
+	////////////////////
+
+	/**
 	 * TODO : commenter cette méthode
 	 * @param world_ref
 	 */
@@ -69,64 +128,6 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 		var folder = settings.worldsFolders[world_ref].folder ? settings.worldsFolders[world_ref].folder : world_ref;
 		var file = (settings.worldsFolders[world_ref].file ? settings.worldsFolders[world_ref].file : 'index') + '.html';
 		return root + '/' + folder + '/' + file;
-	}
-
-	/**
-	 * TODO : commenter la méthode
-	 */
-	function initService(settings) {
-		console.log(settings);
-		if (!initialized) {
-			console.log('init service starting');
-			initialized = true;
-			var callback = executeActionCall;
-			if (customCallback()) callback = settings.onUrlInvokeCallback;
-			plugin.get().setOnUrlInvokeCallback(callback);
-			if (doDeviceCheck()) {
-				console.log('checking device');
-				checkDevice();
-			} else {
-				console.log('device check skipped due to init settings');
-			}
-		}
-
-		////////////////////
-
-		/**
-		 * Checks if you defined a custom onUrlInvokeCallback in the initService function's 'settings' argument.
-		 * @returns {boolean}
-		 */
-		function customCallback() {
-			return settings && settings.hasOwnProperty('onUrlInvokeCallback') && typeof settings.onUrlInvokeCallback === 'function';
-		}
-
-		/**
-		 * Checks if you defined in the initService function's 'settings' argument that the device checking should be done.
-		 * @returns {boolean}
-		 */
-		function doDeviceCheck() {
-			return !(settings && settings.hasOwnProperty('doDeviceCheck') && settings.doDeviceCheck === false);
-		}
-	}
-
-	/**
-	 * TODO : vérifier le commentaire
-	 * Checks if the device supports the features needed by the ARchitect World.
-	 * These features are set with the reqFeatures property of the Wikitude service.
-	 * The result of this check is available through the deviceSupportsFeatures property of the Wikitude service
-	 * for it to be used later (alerting the user that he's/she's device is not compatible, for instance).
-	 * For conveniency, the result of the check is returned by the function.
-	 */
-	function checkDevice() {
-		var q = $q.defer();
-		plugin.get().isDeviceSupported(function (success) {
-			service.deviceSupportsFeatures = true;
-			q.resolve(success);
-		}, function (error) {
-			service.deviceSupportsFeatures = false;
-			q.reject(error);
-		}, settings.reqFeatures);
-		return q.promise;
 	}
 
 	/**
