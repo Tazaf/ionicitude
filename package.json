@@ -1,0 +1,48 @@
+{
+  "name": "ionic-wikitude-module",
+  "version": "0.0.0",
+  "description": "AngularJS module for using the Wikitude cordova plugin in an Ionic project.",
+  "main": "./dist/ionic-wikitude-module.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/Tazaf/ionic-wikitude-module.git"
+  },
+  "keywords": [
+    "angular",
+    "Angular",
+    "angularjs",
+    "angular-js",
+    "AngularJS",
+    "Angular-JS",
+    "module",
+    "ionic",
+    "Ionic",
+    "wikitude",
+    "Wikitude",
+    "ar",
+    "augmented",
+    "reality",
+    "plugin",
+    "cordova",
+    "Cordova"
+  ],
+  "author": "Mathias Oberson  <obersonmathias@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/Tazaf/ionic-wikitude-module/issues"
+  },
+  "homepage": "https://gitlab.com/Tazaf/ionic-wikitude-module#README",
+  "devDependencies": {
+    "bower": "^1.7.9",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-footer": "^1.0.5",
+    "gulp-header": "^1.7.1",
+    "gulp-ng-annotate": "^2.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.3"
+  }
+}

@@ -1,8 +1,4 @@
 /**
- * Created by Mathias on 31.03.2016.
+ * Defines the WikitudeModule for subsequent uses in AngularJS
  */
-(function () {
-  'use strict';
-
-  angular.module('WikitudeModule', []);
-})();
+angular.module('WikitudeModule', []);

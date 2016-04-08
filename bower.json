@@ -1,7 +1,7 @@
 {
   "name": "ionic-wikitude-module",
   "authors": [
-    "Tazaf <obersonmathias@gmail.com>"
+    "Mathias Oberson <obersonmathias@gmail.com>"
   ],
   "description": "AngularJS module for using the Wikitude cordova plugin in an Ionic project.",
   "main": "./dist/ionic-wikitude-module.js",
@@ -28,13 +28,12 @@
   "license": "MIT",
   "homepage": "",
   "ignore": [
-    "**/.*",
-    "logo.png",
-    "src"
+    "*",
+    "!dist"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/Tazaf/ionic-wikitude-module.git"
+    "url": "git://gitlab.com/Tazaf/ionic-wikitude-module.git"
   },
   "dependencies": {
     "angular": "~1.4.3"
