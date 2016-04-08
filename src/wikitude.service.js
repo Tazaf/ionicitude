@@ -16,15 +16,14 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 
 	/**
 	 * Defines the service object that will be publicaly accessible when injecting the Wikitude service.
-	 * @type {{checkDevice: Function, deviceSupportsFeatures: Boolean, initService: Function, launchAR: Function}}
+	 * @type {Object}
 	 */
 	var service = {
 		checkDevice: checkDevice,
 		deviceSupportsFeatures: false,
 		initService: initService,
 		launchAR: launchAR,
-		setup: setup,
-		executeActionCall: executeActionCall
+		setup: setup
 	};
 
 	return service;

@@ -81,7 +81,7 @@ describe('WikitudeModule', function () {
       })
     });
 
-    describe('executeActionCall()', function () {
+    xdescribe('executeActionCall()', function () {
       it('should call the foo function with no parameter', function () {
         var url = 'architectsdk://foo';
         service.executeActionCall(url);
@@ -107,7 +107,8 @@ describe('WikitudeModule', function () {
     });
 
     describe('launchAR()', function () {
-      xit('should throw an error if the device does not support features', function () {
+      it('should throw an error if the device does not support features', function () {
+	      settingsMock.deviceSupportsFeatures = false;
         expect(service.launchAR).toThrowError(UnsupportedFeatureError);
       });
 
@@ -118,5 +119,4 @@ describe('WikitudeModule', function () {
       //TODO : vérifier que l'appel à été fait avec le bon nom pour getWorldUrl()
     })
   })
-})
-;
+});

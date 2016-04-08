@@ -8,6 +8,7 @@ var rename = require('gulp-rename');
 var ngAnnotate = require('gulp-ng-annotate');
 var header = require('gulp-header');
 var footer = require('gulp-footer');
+var addsrc = require('gulp-add-src');
 
 var dest = './dist';
 var distName = 'ionic-wikitude-module';
@@ -15,10 +16,10 @@ var start = ';(function(){\n"use strict";\n\n';
 var end = '})();';
 
 var files = [
-	'./src/UnsupportedFeatureError.js',
 	'./src/wikitude.module.js',
 	'./src/wikitude.settings.js',
 	'./src/wikitude.plugin.js',
+	'./src/wikitude.lib.js',
 	'./src/wikitude.service.js'
 ];
 
@@ -32,6 +33,8 @@ gulp.task('default', function () {
  * - Concatenates all module files in the correct order
  * - Opens the IIFE by adding a header
  * - Closes the IIFE by adding a footer
+ * - Prepends the UnsupportedFeatureException script in the gulp.src
+ * - Concatenates everything
  * - Rename the file
  * - Saves the file in the destination folder
  * - Checks for any injection and adds the injection statements
@@ -41,9 +44,11 @@ gulp.task('default', function () {
  */
 gulp.task('default', function () {
 	return gulp.src(files)
-		.pipe(concat('concat'))
+		.pipe(concat('concat-src'))
 		.pipe(header(start))
 		.pipe(footer(end))
+		.pipe(addsrc.prepend('./src/UnsupportedFeatureError.js'))
+		.pipe(concat('concat-all'))
 		.pipe(rename({basename: distName, extname: '.js'}))
 		.pipe(gulp.dest(dest))
 		.pipe(ngAnnotate())

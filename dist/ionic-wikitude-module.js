@@ -1,6 +1,3 @@
-;(function(){
-"use strict";
-
 /**
  * Defines the UnsupportedFeatureError classe.
  * This type of error is and should be used whenever the app tries to start an ARchitect World that request features not supported by the device running the app.
@@ -26,6 +23,9 @@ UnsupportedFeatureError.prototype = Object.create(Error.prototype, {
 		configurable: true
 	}
 });
+
+;(function(){
+"use strict";
 
 /**
  * Defines the WikitudeModule for subsequent uses in AngularJS
@@ -132,6 +132,32 @@ function plugin() {
 }
 
 /**
+ * Defines a lib service. This is where you can define custom functions that will be called from the AR View.
+ */
+angular
+	.module('WikitudeModule')
+	.service('lib', lib);
+
+/* @ngInject */
+function lib(plugin) {
+
+	// This is where your custom functions go
+
+	this.close = close;
+	this.hide = hide;
+
+	////////////////////
+
+	function close() {
+		plugin.get().close();
+	}
+
+	function hide() {
+		plugin.get().hide();
+	}
+}
+
+/**
  * Defines the main service of the Wikitude module.
  * This is the service that you will inject into your controllers in order to use the Wikitude cordova plugin functions.
  */
@@ -149,7 +175,7 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 
 	/**
 	 * Defines the service object that will be publicaly accessible when injecting the Wikitude service.
-	 * @type {{checkDevice: Function, deviceSupportsFeatures: Boolean, initService: Function, launchAR: Function}}
+	 * @type {Object}
 	 */
 	var service = {
 		checkDevice: checkDevice,
@@ -224,7 +250,7 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 	 */
 	function launchAR(world_ref) {
 		if (!world_ref) world_ref = 'main';
-		if (service.deviceSupportsFeatures) {
+		if (settings.deviceSupportsFeatures) {
 			var q = $q.defer();
 			console.log('launch');
 			plugin.get().loadARchitectWorld(function (success) {
