@@ -1,3 +1,6 @@
+.DS_Store*
+node_modules/
+
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
@@ -5,7 +8,6 @@
 # Created by https://www.gitignore.io/api/osx,windows,webstorm,sublimetext
 
 ### OSX ###
-.DS_Store*
 .AppleDouble
 .LSOverride
 
