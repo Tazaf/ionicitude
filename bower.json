@@ -33,7 +33,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://gitlab.com/Tazaf/ionic-wikitude-module.git"
+    "url": "git://github.com/Tazaf/ionic-wikitude-module.git"
   },
   "dependencies": {
     "angular": "~1.4.3"
