@@ -5,14 +5,14 @@
 AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 
 ## Introduction
-This bower package is designed for Ionic developers that wants to use the [cordova Wikitude plugin](http://www.wikitude.com/products/extensions/cordova-plugin-augmented-reality/) to add Augmented Reality (AR) in their app. It provides an Angular Service, named Ionicitude, with a simple API to interact with the cordova plugin, wether it be setting, launching or handling request (more about that later).
+This bower package is designed for Ionic developers that wants to use the [cordova Wikitude plugin](http://www.wikitude.com/products/extensions/cordova-plugin-augmented-reality/) to add Augmented Reality (AR) in their app. It provides an Angular Service, named **Ionicitude**, with a simple API to interact with the cordova plugin, wether it be setting, launching or handling request (more about that later).
 
 ## What is the cordova Wikitude plugin ?
-This is a cordova plugin that allows users to experience Augmented Realtity on their devices. This experience can rely on user's location (think [Ingress](https://www.ingress.com/)) or on image recognition, or both. The possibilities are quite impressive and I encourage you to take a look at [the official Demo app](http://www.wikitude.com/try/)) to grasp the extent of what can be accomplish.
-Each of these AR experiences is nothing more than a bunch of HTML/CSS/JS files and is called ARchitect World by the Wikitude staff.
+It's a plugin that allows users to experience Augmented Realtity on their devices through an hybrid Cordova (or Ionic in our case) app. This AR experience can rely on user's location (think [Ingress](https://www.ingress.com/)) or on image recognition, or both. The possibilities are quite impressive and I encourage you to take a look at [the official Demo app](http://www.wikitude.com/try/)) to grasp the extent of what can be accomplish with the plugin.
+An AR Experience is, in the end, nothing more than a bunch of HTML/CSS/JS files and this set of file is called **ARchitect World** by the Wikitude staff.
 
 ### Important note:
-:warning: **The cordova Wikitude plugin relies heavily on the device's hardware and software (camera, accelerometer, compass, etc). Thus, you won't be able to test it anywhere except on a real device. Testing in a browser or an emulator will both fail.**
+:warning: **The cordova Wikitude plugin relies heavily on the device's hardware and software (camera, accelerometer, compass, etc). Thus, _you won't be able to test it anywhere except on a real device_. Testing in a browser or an emulator will both fail.**
 
 # Installing the Cordova Wikitude plugin
 **This package DOES NOT come along with the cordova Wikitude plugin !**
@@ -21,7 +21,9 @@ Since Ionicitude is a service to use the cordova Wikitude plugin, you'll need to
 
 `ionic plugin add https://github.com/Wikitude/wikitude-cordova-plugin.git`
 ## Wikitude Licence Key
-To use the Wikitude plugin, you have to have a valid licence key. You can obtain one by registering on the Wikitude site, logging in, and accessing the [licence key management page](http://www.wikitude.com/developer/licenses). Here, you can download a free trial licence key for the Wikitude SDK.
+To use the Wikitude plugin, you have to have a valid **licence key**. You can obtain one by registering on the Wikitude site, logging in, and accessing the [licence key management page](http://www.wikitude.com/developer/licenses). Here, you can download a free trial licence key for the Wikitude SDK.
+
+_Note that the free trial let's you use all the plugin functionnality, but put a big "Trial" watermark all over your screen and a splash screen before every ARchitect World launch._
 
 The downloaded file is juste a plain text file containing your licence key.
 
