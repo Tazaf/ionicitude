@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Defines the UnsupportedFeatureError classe.
  * This type of error is and should be used whenever the app tries to start an ARchitect World that request features not supported by the device running the app.
