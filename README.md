@@ -22,11 +22,11 @@ This bower package is designed for Ionic developers that wants to use the [cordo
 ## Installing the Cordova Wikitude plugin
 **This package DOES NOT come along with the cordova Wikitude plugin !**
 
-Since Ionicitude is a service to use the cordova Wikitude plugin, you'll need to first install it on your project, with the following command (that can take a while: it's a heavy plugin):
+Since Ionicitude is a service to use the cordova Wikitude plugin, you'll need to first install the plugin on your project, with the following command (that can take a while: it's a heavy plugin):
 
 `ionic plugin add https://github.com/Wikitude/wikitude-cordova-plugin.git`
 ### Wikitude Licence Key
-To use the plugin, you have to have a valid licence key. You can obtain one by registering on the Wikitude site, logging in, and accessing the [licence key management page](http://www.wikitude.com/developer/licenses). Here, you can download a free trial licence key for the Wikitude SDK.
+To use the Wikitude plugin, you have to have a valid licence key. You can obtain one by registering on the Wikitude site, logging in, and accessing the [licence key management page](http://www.wikitude.com/developer/licenses). Here, you can download a free trial licence key for the Wikitude SDK.
 
 The downloaded file is juste a plain text file containing your licence key.
 
