@@ -9,7 +9,7 @@ angular
 /* @ngInject */
 function Ionicitude($q, plugin, settings, protocol, lib) {
 	/**
-	 * This is a simple flag to prevent calling the initService() public method twice.
+	 * This is a simple flag to prevent calling the init() public method twice.
 	 * @type {boolean}
 	 */
 	var initialized = false;
@@ -21,7 +21,7 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	var service = {
 		checkDevice: checkDevice,
 		deviceSupportsFeatures: false,
-		initService: initService,
+		init: init,
 		launchAR: launchAR,
 		setup: setup
 	};
@@ -53,7 +53,7 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	/**
 	 * TODO : commenter la méthode
 	 */
-	function initService(settings) {
+	function init(settings) {
 		console.log(settings);
 		if (!initialized) {
 			console.log('init service starting');
@@ -65,7 +65,7 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 		}
 
 		/**
-		 * Checks if you defined a custom onUrlInvokeCallback in the initService function's 'settings' argument.
+		 * Checks if you defined a custom onUrlInvokeCallback in the init function's 'settings' argument.
 		 * @returns {boolean}
 		 */
 		function customCallback() {
@@ -73,7 +73,7 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 		}
 
 		/**
-		 * Checks if you defined in the initService function's 'settings' argument that the device checking should be done.
+		 * Checks if you defined in the init function's 'settings' argument that the device checking should be done.
 		 * @returns {boolean}
 		 */
 		function doDeviceCheck() {
