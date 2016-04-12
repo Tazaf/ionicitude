@@ -8,7 +8,7 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 This bower package is designed for Ionic developers that wants to use the [cordova Wikitude plugin](http://www.wikitude.com/products/extensions/cordova-plugin-augmented-reality/) to add Augmented Reality (AR) in their app. It provides an Angular Service, named **Ionicitude**, with a simple API to interact with the cordova plugin, wether it be setting, launching or handling request (more about that later).
 
 ## What is the cordova Wikitude plugin ?
-It's a plugin that allows users to experience Augmented Realtity on their devices through an hybrid Cordova (or Ionic in our case) app. This AR experience can rely on user's location (think [Ingress](https://www.ingress.com/)) or on image recognition, or both. The possibilities are quite impressive and I encourage you to take a look at [the official Demo app](http://www.wikitude.com/try/)) to grasp the extent of what can be accomplish with the plugin.
+It's a plugin that allows users to experience Augmented Realtity on their device through an hybrid Cordova (or Ionic in our case) app. This AR experience can rely on user's location (think [Ingress](https://www.ingress.com/)) or on image recognition, or both. The possibilities are quite impressive and I encourage you to take a look at [the official Demo app](http://www.wikitude.com/try/)) to grasp the extent of what can be accomplish with the plugin.
 An AR Experience is, in the end, nothing more than a bunch of HTML/CSS/JS files and this set of file is called **ARchitect World** by the Wikitude staff.
 
 ### Important note:
@@ -17,13 +17,13 @@ An AR Experience is, in the end, nothing more than a bunch of HTML/CSS/JS files 
 # Installing the Cordova Wikitude plugin
 **This package DOES NOT come along with the cordova Wikitude plugin !**
 
-Since Ionicitude is a service to use the cordova Wikitude plugin, you'll need to first install the plugin on your project, with the following command (that can take a while: it's a heavy plugin):
+Since Ionicitude is a service that and help you to use the cordova Wikitude plugin, you'll need to first install the plugin on your project, with the following command (that can take a while: it's a heavy plugin):
 
 `ionic plugin add https://github.com/Wikitude/wikitude-cordova-plugin.git`
 ## Wikitude Licence Key
-To use the Wikitude plugin, you have to have a valid **licence key**. You can obtain one by registering on the Wikitude site, logging in, and accessing the [licence key management page](http://www.wikitude.com/developer/licenses). Here, you can download a free trial licence key for the Wikitude SDK.
+To use the Wikitude plugin, you have to have a valid **licence key**. You can obtain one by registering on [the Wikitude site](http://www.wikitude.com/developer/documentation/phonegap) (top-right of the screen), logging in, and accessing the [licence key management page](http://www.wikitude.com/developer/licenses). Here, you can download a free trial licence key for the Wikitude SDK.
 
-_Note that the free trial let's you use all the plugin functionnality, but put a big "Trial" watermark all over your screen and a splash screen before every ARchitect World launch._
+_Note that the free trial let's you use all the plugin functionnality (geo and 2dtracking), but put a big "Trial" watermark all over your screen and a splash screen before every ARchitect World launch. This is apparently not the case with a paid licence key_
 
 The downloaded file is juste a plain text file containing your licence key.
 
@@ -34,17 +34,23 @@ _Note : If you already installed any platform to your project, you'll need to in
 ## Android platform version ^5.0.0
 If you want your Ionic app to build correctly for android, with the cordova Wikitude plugin installed, it's absolutely imperative that you add the android platform with at least its `5.0.0` version. Otherwise your build will fail.
 
-If you haven't added the android platform to your project yet, you can do it with:
+### "I didn't add my platforms already..."
+
+Cool. When you do, don't forget to do it with:
 
 `ionic platform add android@5.0.0`
 
-If you already added the android platform to your project, please check it's version with this command:
+### "Damn, I already added my platforms !"
+
+Hey, no prob'. You can check your installed version with:
 
 `ionic platform`
 
-If it's lower than `5.0.0`, you will have to update it:
+If it's lower than `5.0.0`, you can update it:
 
 `ionic platform update android@5.0.0`
+
+### "How can I know it worked ?"
 
 When it's done, you can check that everything's OK by typing this commande (and crossing your fingers):
 
@@ -52,14 +58,14 @@ When it's done, you can check that everything's OK by typing this commande (and 
 
 ## Known bugs
 
-Please, be advised that there are actually some awkwards bugs on Android regarding the back button handling from within an AR View, and the user location tracking lifecycle. If you encouter them, please do not raise an issue here but go either on the [Github Wikitude repo](http://github.com/Wikitude/wikitude-cordova-plugin/issues) or on the [Wikitude Developer Forum](http://www.wikitude.com/developer/developer-forum) (you'll need to register).
+Please, be advised that there are some awkwards bugs on Android regarding the back button handling from within an AR View, and the user location tracking lifecycle. If you encouter them, please do not raise an issue here but go either on the [Github Wikitude repo](http://github.com/Wikitude/wikitude-cordova-plugin/issues) or on the [Wikitude Developer Forum](http://www.wikitude.com/developer/developer-forum) (you'll need to register).
 
 # Installing Ionicitude
-OK ! Now that we have successfully installed the cordova Wikitude plugin (right?), let's use it with Ionicitude. To install Ionicitude, you have two choices.
+OK :ok_hand: ! Now that we have successfully installed the cordova Wikitude plugin (right?), let's use it with Ionicitude. To install Ionicitude, you have two choices.
 
 ## With `ionic add`
 
-From within you app's directory, type:
+From within your app's root directory, type:
 
 `ionic add tazaf/ionicitude`
 
