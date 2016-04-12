@@ -38,9 +38,9 @@ describe('IonicitudeModule', function () {
       service = Ionicitude;
     }));
 
-    it('should have an \'initService\' property that is a method', function () {
-      expect(service.initService).toBeDefined();
-      expect(service.initService).toEqual(jasmine.any(Function));
+    it('should have an \'init\' property that is a method', function () {
+      expect(service.init).toBeDefined();
+      expect(service.init).toEqual(jasmine.any(Function));
     });
 
     xdescribe('parseActionUrl()', function () {
