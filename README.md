@@ -9,7 +9,9 @@ This bower package is designed for Ionic developers that wants to use the [cordo
 
 ## What is the cordova Wikitude plugin ?
 It's a plugin that allows users to experience Augmented Realtity on their device through an hybrid Cordova (or Ionic in our case) app. This AR experience can rely on user's location (think [Ingress](https://www.ingress.com/)) or on image recognition, or both. The possibilities are quite impressive and I encourage you to take a look at [the official Demo app](http://www.wikitude.com/try/)) to grasp the extent of what can be accomplish with the plugin.
-An AR Experience is, in the end, nothing more than a bunch of HTML/CSS/JS files and this set of file is called **ARchitect World** by the Wikitude staff.
+An AR Experience is, in the end, nothing more than a bunch of HTML/CSS/JS files. This set of files is called **ARchitect World** by the Wikitude staff.
+
+_Since it's quite a pain to type, we'll call them **AR World** throughout the rest of this README._
 
 ### Important note:
 :warning: **The cordova Wikitude plugin relies heavily on the device's hardware and software (camera, accelerometer, compass, etc). Thus, _you won't be able to test it anywhere except on a real device_. Testing in a browser or an emulator will both fail.**
@@ -132,21 +134,11 @@ function run($ionicPlatform, Ionicitude) {
 
 This function loads up the cordova Wikitude plugin with `cordova.require()` and does a couple of other things that we will see later on (checking the device capabilities and initializing the callback for AR Views' calls).
 
-# Checking Device
+# Checking Device's Functionnalities
 
-**_Note: By default, this method is called by `Ionicitude.initService()`. If you want it to skip this checking part, you can pass an object as the method's argument, with at least the proprty `doDeviceCheck` set to `false`_**
 
-```javascript
-Ionicitude.initService({
-  doDeviceCheck: false
-});
-```
 
-**_Be advised that if you do skip the checking in the init part, you will have to call the method yourself at one point._**
-
-----------
-
-We already saw that an ARchitect World can be geo-based or image-recognition-based, or both. So the device that wants to launch them must support whatever functionnality is needed, and the Wikitude plugin must know wether or not it supports them.
+We already saw that an ARchitect World can be geo-based or image-recognition-based, or both. So the device that wants to launch them must support whatever functionnality is needed by your ARchitect World(s), and the Wikitude plugin must know wether or not the device supports them.
 This can be done with this method:
 
 ```javascript
@@ -158,7 +150,7 @@ As for now, there's an impressive amount of... two features that an ARchitect Wo
 * `'geo'`: This feature is needed by an ARchitect World when it wants to use the user's location and manipulates geodata in a general way.
 * `'2dtracking`: This feature is needed by an ARchitect World when it wants to use image recognition and image tracking.
 
-By default, `checkDevice()` will check if the device supports both of these features. It stores the outcome in the `Ionicitude.deviceSupportsFeatures` property, as a Boolean, and then returns a promise, for you to react to any of the outcome:
+By default, `checkDevice()` will check if the device supports both of these features. It stores the result in the `Ionicitude.deviceSupportsFeatures` property, as a Boolean, and then returns a promise, for you to react to any of the outcome:
 
 ```javascript
 Ionicitude.checkDevice()
@@ -170,6 +162,52 @@ Ionicitude.checkDevice()
   });
 ```
 
+**_Note: By default, this check is done on `Ionicitude.initService()`. If you want `initService()` to skip this checking part, you can pass an object as the method's argument, with at least the property `doDeviceCheck` set to `false`_**
+
+```javascript
+Ionicitude.initService({
+  doDeviceCheck: false // This will tell initService() to skip the call to checkDevice()
+});
+```
+
+**_Be advised that if you do skip the call to `checkDevice()` in the init part, you will have to call the method yourself at one point. Preferably before you try to launch any ARchitect World :wink:_**
+
+# Launching an ARchitect World
+
+## What's an ARchitect World
+
+The most simplistic ARchitect World possible is just an HTML file (generally `index.html`), that loads up all the Wikitude logic. **See [this Gist](https://gist.github.com/Tazaf/5209e26e9a66e5eb526ed5ad34152586) for a blank minimal `index.html` file to use in your new ARchitect Worlds.**
+
+More advanced Worlds contains an HTML file, one or several JS files (with your custom code, or third party libraries), maybe some CSS, some image-tracking related files (specific to Wikitude, see [their documentation](http://www.wikitude.com/developer/documentation/phonegap) for more information) or whatever file is useful for this particular AR World..
+
+## Expected file organization
+Ionicitude expects your ARchitect Worlds to be stored in a folder named `wikitude-worlds/`, placed in the `www/` folder. Each of your ARchitect World should have it's own folder inside `wikitude-worlds`:
+
+```
+application-root/
+	...
+	www/
+		...
+		wikitude-worlds/
+			world-foo/
+				index.html
+				... some other files or folders ...
+			world-bar/
+				index.html
+				... some other files or folders ...
+```
+
+## Actually launching an AR World
+To launch an AR, simply call the `Ionicitude.launchAR()`, and pass it the name of the folder containing the ARchitect World's files that you want to launch. Say you want to launch the `world-foo` ARchitect World, you would call the method like that:
+
+```javascript
+Ionicitude.launchAR('world-foo');
+```
+
+This will take the `index.html` file inside the `world-foo` folder, and launch an AR View with it.
+
+**:warning: Note that if the device that wants to launch an AR World passed the `checkDevice()` check with a negative outcome, `Ionicitude.launchAR()` will throw an `UnsupportedFeatureError`.**
+
 # Interaction between the Ionic app and the AR View
 
 ## Boring (but important) explanations ahead!
@@ -178,7 +216,7 @@ It's very important to understand that when the Wikitude plugin launches an AR V
 
 ![New AR View - Diagram](docs/new-ar-view.jpg)
 
-To overcome this technical problem, the Wikitude staff added some mechanism for the two WebViews to communicate. Much like a basic client/server architecture.
+To overcome this, the Wikitude staff added some mechanism for the two WebViews to communicate. Much like a basic client/server architecture.
 
 ### From: AR View, To: Ionic App
 
@@ -188,7 +226,7 @@ Remember when we said earlier that an ARchitect World is ultimately juste HTML/C
 document.location = 'architectsdk://foo?bar';
 ```
 
-... that's the signal for the AR View that it needs to call a previsouly registered callback function, and pass it the URL _(the value of `document.location`)_ as a String argument. This previsouly registered callback function should be then responsible to analyze, interpret and execute whatever it's asked to do.
+... that's the signal for the AR View that it needs to call a previsouly registered callback function, and pass it the URL _(the value of `document.location`)_ as a String argument. This previsouly registered callback function is then responsible to analyzing, interpreting and executing whatever it's asked to do by the URL.
 
 ![Callback Function](docs/callback-function.jpg)
 
@@ -268,7 +306,7 @@ Ionicitude.registerFunction(function(JSON_Object) {
 
 **Be sure to register the function BEFORE your AR View calls it.**
 ### Using custom function library
-If you don't want to register every single function, you can also tell Ionicitude to use your own library object, that will contains all the function needed by your AR Views. Do that by passing an object with at least a `functionLibrary` property as an argument to `Ionicitude.initService()`:
+If you don't want to register every single function with `Ionicitude.registerFunction()`, you can also tell Ionicitude to use your own library object, that will contains all the function needed by your AR Views. Do that by passing an object with at least a `functionLibrary` property as an argument to `Ionicitude.initService()`:
 
 ```javascript
 Ionicitude.initService({
