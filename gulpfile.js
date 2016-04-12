@@ -16,11 +16,11 @@ var start = ';(function(){\n"use strict";\n\n';
 var end = '})();';
 
 var files = [
-	'./src/wikitude.module.js',
-	'./src/wikitude.settings.js',
-	'./src/wikitude.plugin.js',
-	'./src/wikitude.lib.js',
-	'./src/wikitude.service.js'
+	'./src/setup.module.js',
+	'./src/settings.service.js',
+	'./src/plugin.service.js',
+	'./src/lib.service.js',
+	'./src/ionicitude.service.js'
 ];
 
 gulp.task('default', function () {
