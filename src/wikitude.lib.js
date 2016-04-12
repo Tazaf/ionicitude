@@ -2,7 +2,7 @@
  * Defines a lib service. This is where you can define custom functions that will be called from the AR View.
  */
 angular
-	.module('WikitudeModule')
+	.module('IonicitudeModule')
 	.service('lib', lib);
 
 /* @ngInject */

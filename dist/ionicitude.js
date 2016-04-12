@@ -31,7 +31,7 @@ UnsupportedFeatureError.prototype = Object.create(Error.prototype, {
 /**
  * Defines the WikitudeModule for subsequent uses in AngularJS
  */
-angular.module('WikitudeModule', []);
+angular.module('IonicitudeModule', []);
 
 /**
  * Defines the default settings of the Wikitude service.
@@ -59,7 +59,7 @@ var settings = {
 	worldsRootFolder: 'wikitude-worlds',
 	/**
 	 * Each of this parameter property references a sub-folder inside your worldsRootFolder, that containx all the files managing a single ARchitect world experience.
-	 * The name that you give to each property must be used when launching this ARchitect World by calling the launchAR() method of the Wikitude service.
+	 * The name that you give to each property must be used when launching this ARchitect World by calling the launchAR() method of the Ionicitude service.
 	 * For example, to launch the 'main' ARchitext World, you will call : launchAR('main').
 	 * Each property must have it's own two properties : folder and file.
 	 * The first one must be set to the folder's name containing the file for this World, where the second must be set to the HTML main file for this world.
@@ -92,7 +92,7 @@ var settings = {
  * Defines a value service named 'settings' that can be used to access or change any of the service's settings.
  */
 angular
-	.module('WikitudeModule')
+	.module('IonicitudeModule')
 	.value('settings', settings);
 
 /**
@@ -100,7 +100,7 @@ angular
  * This value SHOULD NOT be altered in anyway (hence the use of constant()...) since it's an internal Wikitude setting.
  */
 angular
-	.module('WikitudeModule')
+	.module('IonicitudeModule')
 	.constant('protocol', 'architectsdk://');
 
 /**
@@ -108,7 +108,7 @@ angular
  * You shouldn't need to inject this particular service into your controllers. You can, though.
  */
 angular
-	.module('WikitudeModule')
+	.module('IonicitudeModule')
 	.service('plugin', plugin);
 
 function plugin() {
@@ -136,7 +136,7 @@ function plugin() {
  * Defines a lib service. This is where you can define custom functions that will be called from the AR View.
  */
 angular
-	.module('WikitudeModule')
+	.module('IonicitudeModule')
 	.service('lib', lib);
 
 /* @ngInject */
@@ -163,11 +163,11 @@ function lib(plugin) {
  * This is the service that you will inject into your controllers in order to use the Wikitude cordova plugin functions.
  */
 angular
-	.module('WikitudeModule')
-	.factory('Wikitude', Wikitude);
+	.module('IonicitudeModule')
+	.factory('Ionicitude', Ionicitude);
 
 /* @ngInject */
-function Wikitude($q, plugin, settings, protocol, lib) {
+function Ionicitude($q, plugin, settings, protocol, lib) {
 	/**
 	 * This is a simple flag to prevent calling the initService() public method twice.
 	 * @type {boolean}
@@ -175,7 +175,7 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 	var initialized = false;
 
 	/**
-	 * Defines the service object that will be publicaly accessible when injecting the Wikitude service.
+	 * Defines the service object that will be publicaly accessible when injecting the Ionicitude service.
 	 * @type {Object}
 	 */
 	var service = {
@@ -193,8 +193,8 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 	/**
 	 * TODO : vérifier le commentaire
 	 * Checks if the device supports the features needed by the ARchitect World.
-	 * These features are set with the reqFeatures property of the Wikitude service.
-	 * The result of this check is available through the deviceSupportsFeatures property of the Wikitude service
+	 * These features are set with the reqFeatures property of the Ionicitude service.
+	 * The result of this check is available through the deviceSupportsFeatures property of the Ionicitude service
 	 * for it to be used later (alerting the user that he's/she's device is not compatible, for instance).
 	 * For conveniency, the result of the check is returned by the function.
 	 */
@@ -277,7 +277,7 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 	function getWorldUrl(world_ref) {
 		// vérifier que la world_ref existe
 		if (!settings.worldsFolders.hasOwnProperty(world_ref)) {
-			throw new SyntaxError('Wikitude Module : launchAR() : The argument\'s value (\'' + world_ref + '\')passed in launchAR doesn\'t match any property of the worldsFolders setting.');
+			throw new SyntaxError('Ionicitude Module : launchAR() : The argument\'s value (\'' + world_ref + '\')passed in launchAR doesn\'t match any property of the worldsFolders setting.');
 		}
 		var root = 'www/' + settings.worldsRootFolder;
 		var folder = settings.worldsFolders[world_ref].folder ? settings.worldsFolders[world_ref].folder : world_ref;
@@ -301,7 +301,7 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 			lib[action.funcName](action.parameters);
 		} catch (e) {
 			if (e instanceof TypeError) {
-				throw new TypeError(action.funcName + 'is either undefined or not a function in the Wikitude lib service.');
+				throw new TypeError(action.funcName + 'is either undefined or not a function in the Ionicitude lib service.');
 			} else {
 				throw e;
 			}

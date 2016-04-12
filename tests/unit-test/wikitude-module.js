@@ -1,8 +1,8 @@
-describe('WikitudeModule', function () {
+describe('IonicitudeModule', function () {
 
-  beforeEach(module('WikitudeModule'));
+  beforeEach(module('IonicitudeModule'));
 
-  describe('Wikitude service', function () {
+  describe('Ionicitude service', function () {
     var service, libMock, settingsMock, pluginMock;
 
     beforeEach(function () {
@@ -34,8 +34,8 @@ describe('WikitudeModule', function () {
       })
     });
 
-    beforeEach(inject(function (Wikitude) {
-      service = Wikitude;
+    beforeEach(inject(function (Ionicitude) {
+      service = Ionicitude;
     }));
 
     it('should have an \'initService\' property that is a method', function () {

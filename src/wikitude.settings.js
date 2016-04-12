@@ -24,7 +24,7 @@ var settings = {
 	worldsRootFolder: 'wikitude-worlds',
 	/**
 	 * Each of this parameter property references a sub-folder inside your worldsRootFolder, that containx all the files managing a single ARchitect world experience.
-	 * The name that you give to each property must be used when launching this ARchitect World by calling the launchAR() method of the Wikitude service.
+	 * The name that you give to each property must be used when launching this ARchitect World by calling the launchAR() method of the Ionicitude service.
 	 * For example, to launch the 'main' ARchitext World, you will call : launchAR('main').
 	 * Each property must have it's own two properties : folder and file.
 	 * The first one must be set to the folder's name containing the file for this World, where the second must be set to the HTML main file for this world.
@@ -57,7 +57,7 @@ var settings = {
  * Defines a value service named 'settings' that can be used to access or change any of the service's settings.
  */
 angular
-	.module('WikitudeModule')
+	.module('IonicitudeModule')
 	.value('settings', settings);
 
 /**
@@ -65,5 +65,5 @@ angular
  * This value SHOULD NOT be altered in anyway (hence the use of constant()...) since it's an internal Wikitude setting.
  */
 angular
-	.module('WikitudeModule')
+	.module('IonicitudeModule')
 	.constant('protocol', 'architectsdk://');

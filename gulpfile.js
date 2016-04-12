@@ -11,7 +11,7 @@ var footer = require('gulp-footer');
 var addsrc = require('gulp-add-src');
 
 var dest = './dist';
-var distName = 'ionic-wikitude-module';
+var distName = 'ionicitude';
 var start = ';(function(){\n"use strict";\n\n';
 var end = '})();';
 

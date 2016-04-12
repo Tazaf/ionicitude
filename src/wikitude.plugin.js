@@ -3,7 +3,7 @@
  * You shouldn't need to inject this particular service into your controllers. You can, though.
  */
 angular
-	.module('WikitudeModule')
+	.module('IonicitudeModule')
 	.service('plugin', plugin);
 
 function plugin() {

@@ -17,7 +17,7 @@ module.exports = function(config) {
     files: [
       'src/ionic.bundle.min.js',
       'src/angular-mocks.js',
-      '../dist/ionic-wikitude-module.js',
+      '../dist/ionicitude.js',
       './unit-test/**/*.js'
     ],
 
