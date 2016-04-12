@@ -1,4 +1,4 @@
-# ionic-wikitude-module
+# Ionicitude
 AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 
 # Disclaimer
