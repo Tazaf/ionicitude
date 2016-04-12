@@ -11,23 +11,23 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 
 
 - [Introduction](#introduction)
-  - [What is the cordova Wikitude plugin ?](#what-is-the-cordova-wikitude-plugin-)
-    - [Important note:](#important-note)
+  - [What is the cordova Wikitude plugin?](#what-is-the-cordova-wikitude-plugin)
+    - [Important note](#important-note)
 - [Installing the Cordova Wikitude plugin](#installing-the-cordova-wikitude-plugin)
   - [Wikitude Licence Key](#wikitude-licence-key)
   - [Android platform version ^5.0.0](#android-platform-version-%5E500)
     - ["I didn't add my platforms yet..."](#i-didnt-add-my-platforms-yet)
     - ["Damn, I already added my platforms!"](#damn-i-already-added-my-platforms)
-    - ["How can I know it worked ?"](#how-can-i-know-it-worked-)
+    - ["How can I know it worked?"](#how-can-i-know-it-worked)
   - [Known bugs](#known-bugs)
 - [Installing Ionicitude](#installing-ionicitude)
   - [With `ionic add`](#with-ionic-add)
   - [Manually](#manually)
   - [Registering the dependency](#registering-the-dependency)
-- [Module initialization](#module-initialization)
-- [Checking Device's Functionnalities](#checking-devices-functionnalities)
-- [Launching an ARchitect World](#launching-an-architect-world)
-  - [What's an ARchitect World](#whats-an-architect-world)
+- [Initialization](#initialization)
+- [Checking Device's Features](#checking-devices-features)
+- [Launching an AR World](#launching-an-ar-world)
+  - [What's an AR World](#whats-an-ar-world)
   - [Expected file organization](#expected-file-organization)
   - [Actually launching an AR World](#actually-launching-an-ar-world)
 - [Interaction between the Ionic app and the AR View](#interaction-between-the-ionic-app-and-the-ar-view)
@@ -48,17 +48,17 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 # Introduction
 This bower package is designed for Ionic developers that wants to use the [cordova Wikitude plugin](http://www.wikitude.com/products/extensions/cordova-plugin-augmented-reality/) to add Augmented Reality (AR) in their app. It provides an Angular Service, named **Ionicitude**, with a simple API to interact with the cordova plugin, wether it be setting, launching or handling request (more about that later).
 
-## What is the cordova Wikitude plugin ?
+## What is the cordova Wikitude plugin?
 It's a plugin that allows users to experience Augmented Realtity on their device through an hybrid Cordova (or Ionic in our case) app. This AR experience can rely on user's location (think [Ingress](https://www.ingress.com/)) or on image recognition, or both. The possibilities are quite impressive and I encourage you to take a look at [the official Demo app](http://www.wikitude.com/try/)) to grasp the extent of what can be accomplish with the plugin.
 An AR Experience is, in the end, nothing more than a bunch of HTML/CSS/JS files. This set of files is called **ARchitect World** by the Wikitude staff.
 
 _Since it's quite a pain to type, we'll call them **AR World** throughout the rest of this README._
 
-### Important note:
+### Important note
 :warning: **The cordova Wikitude plugin relies heavily on the device's hardware and software (camera, accelerometer, compass, etc). Thus, _you won't be able to test it anywhere except on a real device_. Testing in a browser or an emulator will both fail.**
 
 # Installing the Cordova Wikitude plugin
-**This package DOES NOT come along with the cordova Wikitude plugin !**
+**This package DOES NOT come along with the cordova Wikitude plugin!**
 
 Since Ionicitude is a service that uses, and help you to, the cordova Wikitude plugin, you'll need to first install the plugin on your project, with the following command (that can take a while: it's a heavy plugin):
 
@@ -66,7 +66,7 @@ Since Ionicitude is a service that uses, and help you to, the cordova Wikitude p
 ## Wikitude Licence Key
 To use the Wikitude plugin, you have to have a valid **licence key**. You can obtain one by registering on [the Wikitude site](http://www.wikitude.com/developer/documentation/phonegap) (top-right of the screen), logging in, and accessing the [licence key management page](http://www.wikitude.com/developer/licenses). Here, you can download a free trial licence key for the Wikitude SDK.
 
-_Note that the free trial let's you use all the plugin functionnality (geo and 2dtracking), but put a big "Trial" watermark all over your screen and a splash screen before every ARchitect World launch. This is apparently not the case with a paid licence key_
+_Note that the free trial let's you use all the plugin functionnality (geo and 2dtracking), but put a big "Trial" watermark all over your screen and a splash screen before every AR World launch. This is apparently not the case with a paid licence key_
 
 The downloaded file is juste a plain text file containing your licence key.
 
@@ -93,7 +93,7 @@ Hey, no prob'. You can check your installed android platform version with...
 
 `ionic platform update android@5.0.0`
 
-### "How can I know it worked ?"
+### "How can I know it worked?"
 
 When it's done, you can check that everything's OK by typing this commande (and crossing your fingers):
 
@@ -147,12 +147,18 @@ Whatever install method you choose, you'll finally have to register the module i
 angular.module('app', ['ionic', 'Ionicitude', 'other dependencies']);
 ```
 
-# Module initialization
+# Initialization
 Ionicitude needs to actually load the cordova Wikitude plugin to properly function. There's a method for this:
 
 ```javascript
-Ionicitude.initService();
+Ionicitude.init();
 ```
+
+----------
+*Please, see [API Definition > `init()`]() for the complete details about this method, or continue reading to see some of them in their context.*
+
+----------
+
 
 It needs to be called prior to ANY use of the module and only when the device and cordova are ready.
 
@@ -168,61 +174,66 @@ function run($ionicPlatform, Ionicitude) {
   $ionicPlatform.ready(function () {
     // Some Ionic code about StatusBar and stuff...
     
-    Ionicitude.initService();
+    Ionicitude.init();
   });
 }
 ```
 
 This function loads up the cordova Wikitude plugin and does a couple of other things that we will see later on (checking the device capabilities and initializing the callback for AR Views' calls).
 
-**You can pass an object argument to the method to alter some of its default behaviors. See [API Definition > `initService()`]() for the complete details, or continue reading to see some of this object properties in their respective context.**
+*You can pass an object argument to the method to alter some of its default behaviors. See [API Definition > `init()`]().*
 
-# Checking Device's Functionnalities
+# Checking Device's Features
 
-We already saw that an ARchitect World can be geo-based or image-recognition-based, or both. So the device that wants to launch them must support whatever functionnality is needed by your ARchitect World(s), and the Wikitude plugin must know wether or not the device supports them.
+We already saw that an AR World can be geo-based or image-recognition-based, or both. So the device that wants to launch them must support whatever feature is needed by your AR World(s), and the Wikitude plugin must know wether or not the device supports them.
 This can be done with this method:
 
 ```javascript
 Ionicitude.checkDevice();
 ```
 
-As for now, there's an impressive amount of... two features that an ARchitect World could require:
+----------
+*Please, see [API Definition > `checkDevice()`]() for the complete details about this method, or continue reading to see some of them in their context.*
 
-* `'geo'`: This feature is needed by an ARchitect World when it wants to use the user's location and manipulates geodata in a general way.
-* `'2dtracking`: This feature is needed by an ARchitect World when it wants to use image recognition and image tracking.
+----------
 
-By default, `checkDevice()` will check if the device supports both of these features. It stores the result in the `Ionicitude.deviceSupportsFeatures` property, as a Boolean, and then returns a promise, for you to react to any of the outcome:
+As for now, there's an impressive amount of... two features that an AR World could require:
+
+* `'geo'`: This feature is needed by an AR World when it wants to use the user's location and manipulates geodata in a general way.
+* `'2dtracking`: This feature is needed by an AR World when it wants to use image recognition and image tracking.
+
+By default, `checkDevice()` will check if the device supports both of these features, but if your app will ever use only one of them, you can alter this default behavior by changing Ionicitude's settings _(see [Changing Ionicitude's Settings]())_. It stores the result of the check in the `Ionicitude.deviceSupportsFeatures` property, as a Boolean, and then returns a promise, for you to react to any of the outcome:
 
 ```javascript
 Ionicitude.checkDevice()
   .then(function(success) {
-    // What do you want to do if the device supports eveything ?
+    // What do you want to do if the device supports eveything?
   })
   .catch(function(error) {
-    // What do you want to do if the device doesn't support at least one of the feature ?
+    // What do you want to do if the device doesn't support at least one of the feature?
   });
 ```
 
-**_Note: By default, this check is done on `Ionicitude.initService()`. If you want `initService()` to skip this checking part, you can pass an object as the method's argument, with at least the property `doDeviceCheck` set to `false`_**
+**_Note: By default, this check is done on `Ionicitude.init()`. If you want `init()` to skip this checking part, you can pass an object as the method's argument, with at least the property `doDeviceCheck` set to `false`_**
 
 ```javascript
-Ionicitude.initService({
-  doDeviceCheck: false // This will tell initService() to skip the call to checkDevice()
+Ionicitude.init({
+  doDeviceCheck: false // This will tell init() to skip the call to checkDevice()
 });
 ```
 
-**_Be advised that if you do skip the call to `checkDevice()` in the init part, you will have to call the method yourself at one point. Preferably before you try to launch any ARchitect World :wink:_**
+**_Be advised that if you do skip the call to `checkDevice()` in the init part, you will have to call the method yourself at one point. Preferably before you try to launch any AR World :wink:_**
 
-# Launching an ARchitect World
+# Launching an AR World
 
-## What's an ARchitect World
+## What's an AR World
 
-The most simplistic ARchitect World possible is just an HTML file (generally `index.html`), that loads up all the Wikitude logic. **See [this Gist](https://gist.github.com/Tazaf/5209e26e9a66e5eb526ed5ad34152586) for a blank minimal `index.html` file to use in your new ARchitect Worlds.**
+The most simplistic AR World possible is just an HTML file (generally `index.html`), that loads up all the Wikitude logic. **See [this Gist](https://gist.github.com/Tazaf/5209e26e9a66e5eb526ed5ad34152586) for a blank minimal `index.html` file to use in your new AR Worlds.**
 
 More advanced Worlds contains an HTML file, one or several JS files (with your custom code, or third party libraries), maybe some CSS, some image-tracking related files (specific to Wikitude, see [their documentation](http://www.wikitude.com/developer/documentation/phonegap) for more information) or whatever file is useful for this particular AR World..
 
 ## Expected file organization
-Ionicitude expects your ARchitect Worlds to be stored in a folder named `wikitude-worlds/`, placed in the `www/` folder. Each of your ARchitect World should have it's own folder inside `wikitude-worlds`:
+Ionicitude expects your AR Worlds to be stored in a folder named `wikitude-worlds/`, placed in the `www/` folder. Each of your AR World should have it's own folder inside `wikitude-worlds`:
 
 ```
 application-root/
@@ -238,8 +249,10 @@ application-root/
 				... some other files or folders ...
 ```
 
+**TODO : Registering Worlds folder ? Or checking if the folder exists with its index.html file ?**
+
 ## Actually launching an AR World
-To launch an AR, simply call the `Ionicitude.launchAR()`, and pass it the name of the folder containing the ARchitect World's files that you want to launch. Say you want to launch the `world-foo` ARchitect World, you would call the method like that:
+To launch an AR, simply call the `Ionicitude.launchAR()`, and pass it the name of the folder containing the AR World's files that you want to launch. Say you want to launch the `world-foo` AR World, you would call the method like that:
 
 ```javascript
 Ionicitude.launchAR('world-foo');
@@ -253,7 +266,7 @@ This will take the `index.html` file inside the `world-foo` folder, and launch a
 
 ## Boring (but important) explanations ahead!
 
-It's very important to understand that when the Wikitude plugin launches an AR View, it does not so in the context of your Ionic App. It creates a completely new, independant, agnostic WebView, that comes over your Ionic App's view (check the following diagram). That means that all your data, scopes, services, controllers or whatever your app is using are complete strangers for the AR View.
+It's very important to understand that when the Wikitude plugin launches an AR View, it does not so in the context of your Ionic App. It creates a completely new, independant, agnostic WebView, that comes over your Ionic App view (check the following diagram). That means that all your data, scopes, services, controllers or whatever your app is using are complete strangers for the AR View.
 
 ![New AR View - Diagram](docs/new-ar-view.jpg)
 
@@ -261,7 +274,7 @@ To overcome this, the Wikitude staff added some mechanism for the two WebViews t
 
 ### From: AR View, To: Ionic App
 
-Remember when we said earlier that an ARchitect World is ultimately juste HTML/CSS/JS files ? Well, whenever one of the ARchitect World's JS file execute a statement that looks like this one...
+Remember when we said earlier that an AR World is ultimately juste HTML/CSS/JS files? Well, whenever one of the AR World's JS file execute a statement that looks like this one...
 
 ```javascript
 // Somewhere in an AR World'JS file
@@ -275,7 +288,7 @@ Thankfully, Ionicitude provides you with it's own way of doing this, so you don'
 ![Callback Function](docs/callback-function.jpg)
 
 ### From: Ionic App, To: AR View
-If you want your Ionic App to trigger some behavior in the AR View, you can use `Ionicitude.callJavascript()` to do so.
+If you want your Ionic App to trigger some behavior in the AR View (send a bunch of data to be displayed, for example), you can use `Ionicitude.callJavascript()` to do so.
 
 **For now, this method is just a wrapper around the Wikitude's `callJavascript` function.**
 
@@ -291,11 +304,11 @@ This will call the `getQuestion()` function, passing it `42` as it's only argume
 _**THIS PART COULD MAYBE BE IMPROVED...**_
 
 ## Ionicitude Callback Handling Mechanism (CHM)
-Ionicitude comes with it's own callback handling mechanism (CHM) that is enabled by default when calling `Ionicitude.initService()`.
+Ionicitude comes with it's own callback handling mechanism (CHM) to deal with `document.location` calls. It is enabled by default when calling `Ionicitude.init()`.
 
 ### AR View URL format
 
-Ionicitude's CHM requires that every URL passed as a va lue to `document.location` in an ARchitect World's JS file follows a particular format.
+Ionicitude's CHM requires that every URL passed as a va lue to `document.location` in an AR World's JS file follows a particular format.
 
 1. It needs to start with `architectsdk://`, as this is a requirement from the Wikitude plugin.
 2. The following characters must be the name of the function that will be ultimately called (more about that later)
@@ -319,10 +332,10 @@ All the following URLs will fail, throwing a SyntaxError:
 
 ### Use custom CHM
 If you want to use your own CHM, you can!
-Just pass an object with at least a `customCallback` property as an argument to the `initService()` function. The value of `customCallback` must be a function that takes one argument:
+Just pass an object with at least a `customCallback` property as an argument to the `init()` function. The value of `customCallback` must be a function that takes one argument:
 
 ```javascript
-Ionicitude.initService({
+Ionicitude.init({
 	customcallback: function(arViewUrl) {
 		// Do whatever handling you want to do with every document.location call from an AR View
 	}
@@ -353,10 +366,10 @@ Ionicitude.registerFunction(function(JSON_Object) {
 
 **Be sure to register the function BEFORE your AR View calls it.**
 ### Using custom function library
-If you don't want to register every single function with `Ionicitude.registerFunction()`, you can also tell Ionicitude to use your own library object, that will contains all the function needed by your AR Views. Do that by passing an object with at least a `functionLibrary` property as an argument to `Ionicitude.initService()`:
+If you don't want to register every single function with `Ionicitude.registerFunction()`, you can also tell Ionicitude to use your own library object, that will contains all the function needed by your AR Views. Do that by passing an object with at least a `functionLibrary` property as an argument to `Ionicitude.init()`:
 
 ```javascript
-Ionicitude.initService({
+Ionicitude.init({
 	functionLibrary: {
 		foo: function(){
 			// Some code	
@@ -365,6 +378,6 @@ Ionicitude.initService({
 			// Some code
 		}
 	},
-	// Other initService params...
+	// Other init params...
 });
 ```
