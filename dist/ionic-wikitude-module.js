@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Defines the UnsupportedFeatureError classe.
  * This type of error is and should be used whenever the app tries to start an ARchitect World that request features not supported by the device running the app.
@@ -220,12 +221,7 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 			var callback = executeActionCall;
 			if (customCallback()) callback = settings.onUrlInvokeCallback;
 			plugin.get().setOnUrlInvokeCallback(callback);
-			if (doDeviceCheck()) {
-				console.log('checking device');
-				checkDevice();
-			} else {
-				console.log('device check skipped due to init settings');
-			}
+			doDeviceCheck() && checkDevice();
 		}
 
 		/**
@@ -233,7 +229,7 @@ function Wikitude($q, plugin, settings, protocol, lib) {
 		 * @returns {boolean}
 		 */
 		function customCallback() {
-			return settings && settings.hasOwnProperty('onUrlInvokeCallback') && typeof settings.onUrlInvokeCallback === 'function';
+			return settings && settings.hasOwnProperty('customCallback') && typeof settings.customCallback === 'function';
 		}
 
 		/**
