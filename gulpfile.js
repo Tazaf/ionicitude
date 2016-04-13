@@ -23,10 +23,6 @@ var files = [
 	'./src/ionicitude.service.js'
 ];
 
-gulp.task('default', function () {
-	// place code for your default task here
-});
-
 /**
  * Builds a dist version of the module.
  * This task does the following :
