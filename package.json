@@ -1,5 +1,5 @@
 {
-  "name": "ionic-wikitude-module",
+  "name": "ionicitude",
   "version": "0.0.0",
   "description": "AngularJS module for using the Wikitude cordova plugin in an Ionic project.",
   "main": "./dist/ionic-wikitude-module.js",
