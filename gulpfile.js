@@ -10,7 +10,6 @@ var header = require('gulp-header');
 var footer = require('gulp-footer');
 var addsrc = require('gulp-add-src');
 
-var dest = './dist';
 var distName = 'ionicitude';
 var start = ';(function(){\n"use strict";\n\n';
 var end = '})();';
@@ -38,7 +37,8 @@ var files = [
  * - Renames the file with '.min.js'
  * - Saves the file in the destination folder
  */
-gulp.task('default', function () {
+
+function compileTo(dest) {
 	return gulp.src(files)
 		.pipe(concat('concat-src'))
 		.pipe(header(start))
@@ -51,4 +51,12 @@ gulp.task('default', function () {
 		.pipe(uglify())
 		.pipe(rename({extname: '.min.js'}))
 		.pipe(gulp.dest(dest));
+}
+
+gulp.task('default', function () {
+	return compileTo('./dist');
+});
+
+gulp.task('dev', function () {
+	return compileTo('C:/Projets/BioSentiers/www/lib/ionicitude/dist');
 });

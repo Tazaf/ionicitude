@@ -233,7 +233,15 @@ The most simplistic AR World possible is just an HTML file (generally `index.htm
 More advanced Worlds contains an HTML file, one or several JS files (with your custom code, or third party libraries), maybe some CSS, some image-tracking related files (specific to Wikitude, see [their documentation](http://www.wikitude.com/developer/documentation/phonegap) for more information) or whatever file is useful for this particular AR World..
 
 ## Expected file organization
-Ionicitude expects your AR Worlds to be stored in a folder named `wikitude-worlds/`, placed in the `www/` folder. Each of your AR World should have it's own folder inside `wikitude-worlds`:
+In order to correctly launch your AR Worlds, Ionicitude expects three things:
+
+1. You have a folder named `wikitude-worlds` in your app's `www` folder
+2. Each of your AR World is contained in a single folder inside `wikitude-worlds`
+3. Each of your AR World's folder contains at least an HTML file named `index.html`
+
+**Be sure to respect these rules when creating your AR World's file. Otherwise, launching your Worlds will simply not work.** To be more precise, an AR View will be launched, but it will be completely blank.
+
+So, your file organization should look like this:
 
 ```
 application-root/
@@ -248,8 +256,6 @@ application-root/
 				index.html
 				... some other files or folders ...
 ```
-
-**TODO : Registering Worlds folder ? Or checking if the folder exists with its index.html file ?**
 
 ## Actually launching an AR World
 To launch an AR, simply call the `Ionicitude.launchAR()`, and pass it the name of the folder containing the AR World's files that you want to launch. Say you want to launch the `world-foo` AR World, you would call the method like that:

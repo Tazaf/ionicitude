@@ -180,15 +180,41 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	 */
 	var service = {
 		checkDevice: checkDevice,
-		deviceSupportsFeatures: false,
+		deviceSupportsFeatures: 'pouet',
 		init: init,
 		launchAR: launchAR,
-		setup: setup
+		setup: setup,
+		addAction: addAction,
+		listLibActions: listLibActions
 	};
 
 	return service;
 
 	////////////////////
+
+	function listLibActions() {
+		console.log(Object.hasOwnProperty(lib));
+	}
+
+	/**
+	 * TODO : commenter la méthode
+	 * @param name_or_function
+	 * @param callback
+	 */
+	function addAction(name_or_function, callback) {
+		if (typeof name_or_function === 'string' || name_or_function instanceof String) {
+			if (!callback) throw new TypeError('Ionicitude - addAction() expects a second argument if first argument is of type \'string\'.');
+			if (typeof callback !== 'function') throw new TypeError('Ionicitude - addAction() expects second argument to only be of type \'function\', \'' + typeof callback + '\' given.');
+			lib[name_or_function] = callback;
+		} else if (typeof name_or_function === 'function' || name_or_function instanceof Function) {
+			var name = name_or_function.name;
+			if (!name) throw new TypeError('Ionicitude - addAction() do not accept anonymous function as first argument. Please, try passing a named function instead.');
+			lib[name] = name_or_function;
+		} else {
+			throw new TypeError('Ionicitude - addAction() expects first argument to be of type \'string\' or \'function\', \'' + typeof name_or_function + '\' given');
+		}
+		return service;
+	}
 
 	/**
 	 * TODO : vérifier le commentaire
@@ -199,11 +225,14 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	 * For conveniency, the result of the check is returned by the function.
 	 */
 	function checkDevice() {
+		console.log('checking device');
 		var q = $q.defer();
 		plugin.get().isDeviceSupported(function (success) {
+			console.log(success);
 			service.deviceSupportsFeatures = true;
 			q.resolve(success);
 		}, function (error) {
+			console.log(error);
 			service.deviceSupportsFeatures = false;
 			q.reject(error);
 		}, settings.reqFeatures);
@@ -221,7 +250,7 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 			var callback = executeActionCall;
 			if (customCallback()) callback = settings.onUrlInvokeCallback;
 			plugin.get().setOnUrlInvokeCallback(callback);
-			doDeviceCheck() && checkDevice();
+			doDeviceCheck() && checkDevice() || console.log('check skipped due to init settings');
 		}
 
 		/**
@@ -246,7 +275,7 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	 */
 	function launchAR(world_ref) {
 		if (!world_ref) world_ref = 'main';
-		if (settings.deviceSupportsFeatures) {
+		if (service.deviceSupportsFeatures) {
 			var q = $q.defer();
 			console.log('launch');
 			plugin.get().loadARchitectWorld(function (success) {
@@ -275,14 +304,14 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	 * @param world_ref
 	 */
 	function getWorldUrl(world_ref) {
-		// vérifier que la world_ref existe
-		if (!settings.worldsFolders.hasOwnProperty(world_ref)) {
-			throw new SyntaxError('Ionicitude Module : launchAR() : The argument\'s value (\'' + world_ref + '\')passed in launchAR doesn\'t match any property of the worldsFolders setting.');
-		}
-		var root = 'www/' + settings.worldsRootFolder;
-		var folder = settings.worldsFolders[world_ref].folder ? settings.worldsFolders[world_ref].folder : world_ref;
-		var file = (settings.worldsFolders[world_ref].file ? settings.worldsFolders[world_ref].file : 'index') + '.html';
-		return root + '/' + folder + '/' + file;
+		//if (!settings.worldsFolders.hasOwnProperty(world_ref)) {
+		//	throw new SyntaxError('Ionicitude Module : launchAR() : The argument\'s value (\'' + world_ref + '\')passed in launchAR doesn\'t match any property of the worldsFolders setting.');
+		//}
+		//var root = 'www/' + settings.worldsRootFolder;
+		//var folder = settings.worldsFolders[world_ref].folder ? settings.worldsFolders[world_ref].folder : world_ref;
+		//var file = (settings.worldsFolders[world_ref].file ? settings.worldsFolders[world_ref].file : 'index') + '.html';
+		//return root + '/' + folder + '/' + file;
+		return 'www/' + settings.worldsRootFolder + '/' + world_ref + '/index.html';
 	}
 
 	/**

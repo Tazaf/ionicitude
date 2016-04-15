@@ -9,11 +9,11 @@ describe('IonicitudeModule', function () {
       libMock = {
         foo: jasmine.createSpy('foo'),
         fooBar: "",
-        barfoo: jasmine.createSpy('barfoo')
+        barfoo: jasmine.createSpy('barfoo'),
+        already: function(){}
       };
 
       settingsMock = {
-        deviceSupportsFeatures: true,
         worldsFolders: {
           foo: {}
         }
@@ -37,11 +37,6 @@ describe('IonicitudeModule', function () {
     beforeEach(inject(function (Ionicitude) {
       service = Ionicitude;
     }));
-
-    it('should have an \'init\' property that is a method', function () {
-      expect(service.init).toBeDefined();
-      expect(service.init).toEqual(jasmine.any(Function));
-    });
 
     xdescribe('parseActionUrl()', function () {
       it('should return object with function and parameters properties from url', function () {
@@ -108,15 +103,45 @@ describe('IonicitudeModule', function () {
 
     describe('launchAR()', function () {
       it('should throw an error if the device does not support features', function () {
-	      settingsMock.deviceSupportsFeatures = false;
+	      service.deviceSupportsFeatures = false;
         expect(service.launchAR).toThrowError(UnsupportedFeatureError);
       });
 
-      it('should throw an error if the requested World does not exists', function () {
-        expect(function(){service.launchAR('bar')}).toThrowError(SyntaxError);
+      //TODO : vérifier que l'appel à été fait avec le bon nom pour getWorldUrl()
+    });
+
+    describe('addAction()', function () {
+      it('should throw Errors if bad arguments are passed', function () {
+        // First argument string or function
+        expect(function(){service.addAction(123)}).toThrowError(TypeError, 'Ionicitude - addAction() expects first argument to be of type \'string\' or \'function\', \'number\' given');
+        // First argument string, second argument must by provided
+        expect(function(){service.addAction('ok')}).toThrowError(TypeError, 'Ionicitude - addAction() expects a second argument if first argument is of type \'string\'.');
+        // Second argument must be function
+        expect(function(){service.addAction('ok', 123)}).toThrowError(TypeError, 'Ionicitude - addAction() expects second argument to only be of type \'function\', \'number\' given.');
+        // First argument is function : must have a name
+        expect(function(){service.addAction(function(){})}).toThrowError(TypeError, 'Ionicitude - addAction() do not accept anonymous function as first argument. Please, try passing a named function instead.');
+        // Name should not be already used
+        expect(function(){service.addAction('foo', function(){})}).toThrowError(SyntaxError, 'Ionicitude - addAction() - The name \'foo\' has already been added or is a reserved Ionicitude name.');
       });
 
-      //TODO : vérifier que l'appel à été fait avec le bon nom pour getWorldUrl()
+      describe('string and callback arguments', function () {
+        it('should correctly add the function', function () {
+          service.addAction('functionName', function(){});
+          expect(libMock.hasOwnProperty('functionName')).toBeTruthy();
+          expect(libMock.functionName).toEqual(jasmine.any(Function));
+        });
+      });
+
+      describe('named function argument', function () {
+        it('should correctly add the function', function () {
+          service.addAction(function functionName(){});
+          expect(libMock.hasOwnProperty('functionName')).toBeTruthy();
+          expect(libMock.functionName).toEqual(jasmine.any(Function));
+        });
+      });
+    });
+
+    describe('addActions()', function () {
     })
-  })
+  });
 });

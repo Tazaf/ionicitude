@@ -12,6 +12,8 @@ function lib(plugin) {
 
 	this.close = close;
 	this.hide = hide;
+	this.show = show;
+	this.setLocation = setLocation;
 
 	////////////////////
 
@@ -21,5 +23,9 @@ function lib(plugin) {
 
 	function hide() {
 		plugin.get().hide();
+	}
+
+	function show() {
+		plugin.get().show();
 	}
 }
