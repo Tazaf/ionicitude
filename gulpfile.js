@@ -16,11 +16,11 @@ var end = '})();';
 
 var files = [
 	'./src/setup.module.js',
-	'./src/settings.service.js',
-	'./src/plugin.service.js',
-	'./src/lib.service.js',
 	'./src/ionicitude.service.js'
 ];
+
+var prodFolder = './dist';
+var devFolder = 'C:/Projets/BioSentiers/www/lib/ionicitude/dist';
 
 /**
  * Builds a dist version of the module.
@@ -54,9 +54,9 @@ function compileTo(dest) {
 }
 
 gulp.task('default', function () {
-	return compileTo('./dist');
+	return compileTo(prodFolder);
 });
 
 gulp.task('dev', function () {
-	return compileTo('C:/Projets/BioSentiers/www/lib/ionicitude/dist');
+	return compileTo(devFolder);
 });

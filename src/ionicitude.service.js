@@ -7,7 +7,20 @@ angular
 	.factory('Ionicitude', Ionicitude);
 
 /* @ngInject */
-function Ionicitude($q, plugin, settings, protocol, lib) {
+function Ionicitude($q) {
+	/**
+	 * Defines the service object that will be publicly accessible when injecting the Ionicitude service.
+	 * @type {Object}
+	 */
+	var service = {
+		checkDevice: checkDevice,
+		deviceSupportsFeatures: false,
+		init: init,
+		launchAR: launchAR,
+		addAction: addAction,
+		listLibActions: listLibActions
+	};
+
 	/**
 	 * This is a simple flag to prevent calling the init() public method twice.
 	 * @type {boolean}
@@ -15,16 +28,45 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	var initialized = false;
 
 	/**
-	 * Defines the service object that will be publicaly accessible when injecting the Ionicitude service.
+	 * Defines the value of the url protocol used by Wikitude to call the app from within the AR View.
+	 * This value SHOULD NOT be altered in anyway since it's an internal Wikitude setting.
+	 */
+	var protocol = 'architectsdk://';
+
+	/**
+	 * This will store the WikitudePlugin after a call to getPlugin().
+	 */
+	var plugin;
+
+	/**
+	 * This is where all your custom CHM Actions will be stored at runtime.
+	 */
+	var lib = {};
+
+	/**
+	 * Defines the default settings of the Wikitude service.
+	 * You can change any of those settings using the settings() method of the Wikitude service.
 	 * @type {Object}
 	 */
-	var service = {
-		checkDevice: checkDevice,
-		deviceSupportsFeatures: 'pouet',
-		init: init,
-		launchAR: launchAR,
-		addAction: addAction,
-		listLibActions: listLibActions
+	var settings = {
+		// TODO : commenter la propriété selon la doc de Wikitude.
+		worldConfig: {camera_position: 'back'},
+		/**
+		 * Defines which features your AR app need the device to support.
+		 * For now, only two features are available in the cordova WikitudePlugin.
+		 * The first one is 'geo' and is used for any ARchitect World that wants to rely on the user's location.
+		 * The second is '2dtracking' and is used for any ARchitect World that wants to use image recognition and image tracking.
+		 * More information : http://www.wikitude.com/developer/documentation/phonegap.
+		 * @type {Array}
+		 */
+		reqFeatures: ['geo', '2dtracking'],
+		/**
+		 * Defines where in your app are stored all your ARchitect World folders.
+		 * By default, a wikitude-worlds folder is created at the root of your app but you can easily change that by giving this parameter your custom path.
+		 * Example : if you want to store your worlds folder in a myWorlds folder inside www, change the value to 'www/myWorlds'.
+		 * @type {String}
+		 */
+		worldsRootFolder: 'wikitude-worlds'
 	};
 
 	return service;
@@ -78,7 +120,7 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	function checkDevice() {
 		console.log('checking device');
 		var q = $q.defer();
-		plugin.get().isDeviceSupported(function (success) {
+		plugin.isDeviceSupported(function (success) {
 			console.log(success);
 			service.deviceSupportsFeatures = true;
 			q.resolve(success);
@@ -92,17 +134,21 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 
 	/**
 	 * TODO : commenter la méthode
+	 * TODO : Revoir un l'organisation du code
+	 * TODO : implémenter une promise ?
 	 */
 	function init(settings) {
 		console.log(settings);
 		if (!initialized) {
 			console.log('init service starting');
 			initialized = true;
+			setPlugin();
 			var callback = executeActionCall;
-			if (customCallback()) callback = settings.onUrlInvokeCallback;
-			plugin.get().setOnUrlInvokeCallback(callback);
+			if (customCallback()) callback = settings.customCallback;
+			plugin.setOnUrlInvokeCallback(callback);
 			doDeviceCheck() && checkDevice() || console.log('check skipped due to init settings');
 		}
+		return service;
 
 		/**
 		 * Checks if you defined a custom onUrlInvokeCallback in the init function's 'settings' argument.
@@ -129,7 +175,7 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 		if (service.deviceSupportsFeatures) {
 			var q = $q.defer();
 			console.log('launch');
-			plugin.get().loadARchitectWorld(function (success) {
+			plugin.loadARchitectWorld(function (success) {
 				q.resolve(success);
 			}, function (error) {
 				q.reject(error);
@@ -169,15 +215,9 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	 */
 	function executeActionCall(call) {
 		var action = parseActionUrl(call);
-		try {
-			lib[action.funcName](action.parameters);
-		} catch (e) {
-			if (e instanceof TypeError) {
-				throw new TypeError(action.funcName + 'is either undefined or not a function in the Ionicitude lib service.');
-			} else {
-				throw e;
-			}
-		}
+		console.log(call, action);
+		if (!lib.hasOwnProperty(action.funcName) || typeof lib[action.funcName] !== 'function') throw new TypeError('\'' + action.funcName + '\' is either undefined or not a function in the Ionicitude service.');
+		lib[action.funcName](plugin, action.parameters);
 	}
 
 	/**
@@ -213,6 +253,19 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 			return action;
 		} else {
 			throw new SyntaxError('parseActionUrl() expects first parameter to be a string starting with \'' + protocol + '\'.');
+		}
+	}
+
+	/**
+	 * TODO : revoir le commentaire
+	 * This function should be used to retrieve the Wikitude plugin in order to access and/or execute any of it's built-in functions.
+	 * It follows the Singleton pattern in that it either load the plugin and returns it if it's the first time it's called,
+	 * or return the already loaded plugin for each subsequent call.
+	 * @returns {WikitudePlugin} The cordova Wikitude plugin
+	 */
+	function setPlugin() {
+		if (!plugin) {
+			plugin = cordova.require('com.wikitude.phonegap.WikitudePlugin.WikitudePlugin');
 		}
 	}
 }
