@@ -2,7 +2,7 @@
 /**
  * Defines the UnsupportedFeatureError classe.
  * This type of error is and should be used whenever the app tries to start an ARchitect World that request features not supported by the device running the app.
- * The requested features (reqFeatures) is a setting accessible in the wikitude.settings.js file.
+ * Your app's required Features can be defined in the Ionicitude.init() method.
  * @constructor
  */
 function UnsupportedFeatureError() {
@@ -12,7 +12,7 @@ function UnsupportedFeatureError() {
 	if (temp.message) {
 		this.message = temp.message;
 	} else {
-		this.message = "Worls loading error : Your device does not support one or several of it's requested features."
+		this.message = "AR World loading error : Your device does not support one or several of it's requested features."
 	}
 }
 
