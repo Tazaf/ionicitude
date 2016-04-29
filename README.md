@@ -54,17 +54,21 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 # Introduction
 This bower package is designed for Ionic developers that wants to use the [cordova Wikitude plugin](http://www.wikitude.com/products/extensions/cordova-plugin-augmented-reality/) to add Augmented Reality (AR) in their app. It provides an Angular Service, named **Ionicitude**, with a simple API to interact with the cordova plugin, wether it be setting it, launching it or handling the AR Views' requests (more about that later).
 
+## Disclaimer
+**Please note that this project is not developped in association with or related to neither the Ionic team nor the Wikitude team.**
+
 ## What is the cordova Wikitude plugin?
-It's a plugin that allows users to experience Augmented Realtity on their device through an hybrid Cordova (or Ionic in our case) app. This AR experience can rely on user's location (think [Ingress](https://www.ingress.com/)) or on images recognition and tracking, or both. The possibilities are quite impressives and I encourage you to take a look at [the official Demo app](http://www.wikitude.com/try/)) to grasp the extent of what can be accomplish with the plugin.
+It's a plugin that allows users to experience Augmented Realtity on their device through an hybrid Cordova (or Ionic in our case) app. This AR experience can rely on user's location (think [Ingress](https://www.ingress.com/)) or on images recognition and tracking, or both. The possibilities are quite impressive and I encourage you to take a look at [the official Demo app](http://www.wikitude.com/try/) to grasp the extent of what can be accomplish with the plugin.
+
 An AR Experience is, in the end, nothing more than a bunch of HTML/CSS/JS files. This set of files is called **ARchitect World** by the Wikitude staff.
 
 _Since it's quite a pain to type, I'll call them **AR World** throughout the rest of this README._
 
 ### Important note
-:warning: **The cordova Wikitude plugin relies heavily on the device's hardware and software (camera, accelerometer, compass, etc). Thus, _you won't be able to test it anywhere except on a real device_. Testing in a browser or an emulator will both fail.**
+:warning: **The cordova Wikitude plugin relies heavily on the device's hardware and software (camera, accelerometer, compass, etc). Thus, _you won't be able to test your app (at least the AR part of it) anywhere except on a real device_. Testing it in a browser or an emulator will fail.**
 
 # Installing the Cordova Wikitude plugin
-**This package DOES NOT come along with the cordova Wikitude plugin!**
+:exclamation: **This package DOES NOT come along with the cordova Wikitude plugin!**
 
 Since Ionicitude is a service that uses the cordova Wikitude plugin, you'll need to first install the plugin on your project. Do it with the following command (that can take a while: it's a heavy plugin):
 
@@ -72,7 +76,7 @@ Since Ionicitude is a service that uses the cordova Wikitude plugin, you'll need
 ## Wikitude Licence Key
 To use the Wikitude plugin, you have to have a valid **licence key**. You can obtain one by registering on [the Wikitude site](http://www.wikitude.com/developer/documentation/phonegap) (top-right of the screen), logging in, and accessing the [licence key management page](http://www.wikitude.com/developer/licenses). Here, you can download a free trial licence key for the Wikitude SDK.
 
-_Note that the free trial let's you use all the plugin functionnality (geo and 2dtracking) without any time limit, but put a splash screen before every AR World launch and a big "Trial" watermark all over your screen. This is apparently not the case with a paid licence key._
+**Note that the free trial let's you use all the plugin functionnality (geo and 2dtracking) without any time limit, but put a splash screen before every AR World launch and a big "Trial" watermark all over your screen. This is apparently not the case with a paid licence key.**
 
 The downloaded file is juste a plain text file containing your licence key.
 
@@ -83,13 +87,13 @@ _Note : If you already installed any platform to your project, you'll need to in
 ## Android platform version ^5.0.0
 If you want your Ionic app to build correctly for android, with the cordova Wikitude plugin installed, it's absolutely imperative that you add the android platform with at least its `5.0.0` version. Otherwise your build will fail.
 
-### "I didn't add my platforms yet..."
+### You didn't add any platform ?
 
 That's cool. But, when you do, don't forget to do it with:
 
 `ionic platform add android@5.0.0`
 
-### "Damn, I already added my platforms!"
+### You already added your platform(s) ?
 
 Hey, no prob'. You can check your installed android platform version with...
 
@@ -99,7 +103,7 @@ Hey, no prob'. You can check your installed android platform version with...
 
 `ionic platform update android@5.0.0`
 
-### "How can I know it worked?"
+### How to check it worked
 
 When it's done, you can check that everything's OK by typing this commande (and crossing your fingers):
 
@@ -109,7 +113,7 @@ If you see a releaving `BUILD SUCCESSFULL` at the end of the process, congrats! 
 
 ## Known Android bugs
 
-Please, be advised that I've been confronted, when using the Wikitude plugin, with some awkwards bugs on Android regarding the back button handling from within an AR View, and the user location tracking lifecycle. If you encouter them or any other bugs related to the Wikitude plugin, please go on the [Github Wikitude repo](http://github.com/Wikitude/wikitude-cordova-plugin/issues) or on the [Wikitude Developer Forum](http://www.wikitude.com/developer/developer-forum) (you'll need to register).
+Please, be advised that I've been confronted, when using the Wikitude plugin, to some awkwards bugs on Android  devices regarding the back button handling from within an AR View, and the user location tracking lifecycle. If you encouter them or any other bugs related to the Wikitude plugin, please go on the [Github Wikitude repo](http://github.com/Wikitude/wikitude-cordova-plugin/issues) or on the [Wikitude Developer Forum](http://www.wikitude.com/developer/developer-forum) (you'll need to register).
 
 **Having mostly developped with Ionic on Android, I don't know if these bugs also impact iOS builds. From the few tests that I've done, it's apparently not the case.**
 
@@ -118,13 +122,13 @@ OK :ok_hand: ! Now that you have successfully installed the cordova Wikitude plu
 
 ## 1a. With `ionic add`
 
-From within your app's root directory, type:
+Using any command ligne tool, go to your app's root directory and type:
 
 `ionic add tazaf/ionicitude`
 
 _Note : this is just syntactic sugar for `bower install`_
 
-**The package will be installed in the `www/lib/ionicitude`.**
+After some download, Ionicitude will be installed on your project. **The files will be locate in `www/lib/ionicitude`.**
 
 You will then need to add the following line in your app's `index.html`, after the calls to `ionic.bundle.js` and `cordova.js` :
 
@@ -139,20 +143,28 @@ Or, if you want the humanly readable version :
 ```
 
 ## 1b. Manually
-You can also simply download this project on your computer and place it wherever you like in your project. Then, locate either the `ionicitude.js` file **or** the `ionicitude.min.js` file, both being in the `dist` folder of the package, and include it in your app's `index.html`, after the calls to `ionic.bundle.js` and `cordova.js` :
+You can simply download this project on your computer and place it wherever you like in your project. Then, locate either the `ionicitude.min.js` file **or** the `ionicitude.js` file, both being in the `dist` folder of the downloaded project, and copy them in your own project, wherever you like.
+
+You will then need to include the file in your app's `index.html`, after the calls to `ionic.bundle.js` and `cordova.js` :
 
 ```html
 <script src="path/to/the/file/ionicitude.min.js"></script>
 ```
 
+Or, if you copied the humanly readable version :
+
+```html
+<script src="path/to/the/file/ionicitude.js"></script>
+```
+
 _Note: you'll obviously need to replace `path/to/the/file` with the actual path to the file._
 
 ## 2. Registering the dependency
-Whatever install method you choose, you'll finally have to register the module in your app's dependencies:
+Whatever installing method you choose, you'll finally have to register the module in your app's dependencies:
 
 ```javascript
 // In app.js or wherever you created your app's module
-angular.module('app', ['ionic', 'Ionicitude', 'other dependencies']);
+angular.module('app', ['ionic', 'Ionicitude', /* other dependencies */]);
 ```
 
 # Initialization
@@ -163,12 +175,11 @@ Ionicitude.init();
 ```
 
 ----------
-*Please, see [API Definition > `init()`]() for the complete details about this method, or continue reading to see some of them in their context.*
+_Please, see [API Definition > `init()`](#init) for the complete details about this method, or continue reading to see some of them in their context._
 
 ----------
 
-
-It needs to be called prior to ANY use of the module and only when the device and cordova are ready.
+**It needs to be called prior to ANY use of the module and only when the device and cordova are ready.**
 
 I suggest that you call this function in the `app.run()` block that every Ionic app normally has, specificaly in the `$ionicPlatform.ready()` block.
 
@@ -188,7 +199,8 @@ function run($ionicPlatform, Ionicitude) {
 ```
 # Checking Device's Features
 
-We already saw that an AR World can be geo-based or image-recognition-based, or both. The device that wants to launch them must support whatever features they require, and the Wikitude plugin must know wether or not the device supports them.
+We already saw that an AR World can be geo-based or image-recognition-based, or both. The device that wants to launch such AR World must support whatever features it requires, and the Wikitude plugin must know wether or not the device supports said features.
+
 This can be done with this method:
 
 ```javascript
@@ -196,7 +208,7 @@ Ionicitude.checkDevice();
 ```
 
 ----------
-*Please, see [API Definition > `checkDevice()`]() for the complete details about this method, or continue reading to see some of them in their context.*
+_Please, see [API Definition > `checkDevice()`](#checkdevice) for the complete details about this method, or continue reading to see some of them in their context._
 
 ----------
 
@@ -211,26 +223,26 @@ Ionicitude.init({
 
 **_Be advised that if you do skip the call to `checkDevice()` in the init part, you will have to call the method yourself at one point. Preferably before you try to launch any AR World :wink:_**
 
-As for now, there's an impressive amount of... two features that an AR World can require:
+As for now, there's only two features that an AR World can require:
 
-* `'geo'`: This feature is needed by an AR World when it wants to use the user's location and manipulates geodata in a general way.
-* `'2d_tracking`: This feature is needed by an AR World when it wants to use image recognition and image tracking.
+* `'geo'` - This feature is needed by an AR World when it wants to use the user's location and manipulates geodata in a general way.
+* `'2d_tracking` - This feature is needed by an AR World when it wants to use image recognition and/or image tracking.
 
 Initially, `checkDevice()` checks if the device supports both of these features, but if your app will ever use only one of them, you can tell that to Ionicitude when initializing the service by passing an object argument to `Ionicitude.init()` with at least a `reqFeatures` array property:
 
 ```javascript
-// Your app only needs geolocation features
+// Your app only needs geolocation features ? Do...
 Ionicitude.init({
 	reqFeatures: ['geo']
 });
 
-// Your app only need image tracking and recognition
+// Your app only need image tracking and/or recognition ? Do...
 Ionicitude.init({
 	reqFeatures: ['2d_tracking']
 });
 ```
 
-**Any string in `reqFeatures` that doesn't reference a valid Wikitude feature will not cause the check to fail. It will just be ignored.**
+:grey_exclamation: **Any string in `reqFeatures` that doesn't reference a valid Wikitude feature will not cause the check to fail. It will just be ignored.**
 
 The result of the check will be stored and available through the `Ionicitude.deviceSupportsFeatures` property, as a Boolean.
 
@@ -253,13 +265,13 @@ Ionicitude.checkDevice()
 
 The most simplistic AR World possible is just an HTML file (generally `index.html`), that loads up all the Wikitude logic. **See [this Gist](https://gist.github.com/Tazaf/5209e26e9a66e5eb526ed5ad34152586) for a blank minimal `index.html` file to use in your new AR Worlds.**
 
-More advanced Worlds contains an HTML file, one or several JS files (with your custom code or third party libraries), maybe some CSS, image-tracking related files (specific to Wikitude, see [their documentation](http://www.wikitude.com/developer/documentation/phonegap) for more information) or whatever file is useful for this particular AR World..
+More advanced AR Worlds contains an HTML file, one or several JS files (with your custom code or third party libraries), maybe some CSS, perhaps some image-tracking related files (specific to Wikitude, see [their documentation](view-source:http://www.wikitude.com/external/doc/documentation/latest/phonegap/targetmanagement.html) for more information) or whatever file is useful for this particular AR World..
 
-## Expected file organization
+## Expected files organization
 In order to correctly launch your AR Worlds, Ionicitude expects three things:
 
 1. You have a folder named `wikitude-worlds` in your app's `www` folder _(optionnal, see below)_
-2. Each of your AR World is contained in a single folder inside `wikitude-worlds` _(name is as you like)_
+2. Each of your AR World is contained in a single folder _(named as you like)_ inside `wikitude-worlds`
 3. Each AR World folder contains at least an HTML file named `index.html`
 
 If you want to use another name than `wikitude-worlds` for your AR Worlds' root folder, you can do that by passing an object argument with at least a `worldsRootFolder` property when calling `Ionicitude.init()`:
@@ -270,16 +282,16 @@ Ionicitude.init({
 });
 ```
 
-**You must still follow rules #2 et #3. Otherwise, your world will not load correctly and you won't know why, because Wikitude does not throw an error if the file does not exists...**
+**You must still follow rules #2 et #3. Otherwise, your world will not load correctly and you won't know why, because Wikitude does not throw an error if the file does not exists** (and I didn't implement a way to check that... yet.)
 
 In the end, your files organization should look like this:
 
 ```
-application-root/
+[your app root directory]/
 	...
 	www/
 		...
-		wikitude-worlds/ **Or whatever name you like**
+		wikitude-worlds/ **Or whatever name you set**
 			world-foo/
 				index.html
 				... some other files or folders ...
@@ -296,7 +308,7 @@ Ionicitude.launchAR('world-foo');
 ```
 
 ----------
-*Please, see [API Definition > `launchAR()`]() for the complete details about this method.*
+_Please, see [API Definition > `launchAR()`](#launchar) for the complete details about this method._
 
 ----------
 
@@ -318,7 +330,7 @@ Ionicitude.launchAR()
 
 # Interaction between the Ionic app and the AR View
 
-## Boring (but important) explanations ahead!
+## Important explanations ahead!
 
 It's very important to understand that when the Wikitude plugin launches an AR View, it does not so in the context of your Ionic App. It creates a completely new, independant, agnostic WebView, that comes over your Ionic App WebView (check the following diagram). That means that all your data, scopes, services, controllers or whatever your app is using are complete strangers for the AR View.
 
