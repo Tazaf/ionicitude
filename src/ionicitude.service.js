@@ -18,7 +18,14 @@ function Ionicitude($q) {
 		init: init,
 		launchAR: launchAR,
 		addAction: addAction,
-		listLibActions: listLibActions
+		listLibActions: listLibActions,
+		captureScreen: captureScreen,
+		// Wikitude API wrapper. Will be set by init()
+		close: null,
+		hide: null,
+		show: null,
+		callJavaScript: null,
+		setLocation: null
 	};
 
 	/**
@@ -83,11 +90,32 @@ function Ionicitude($q) {
 	}
 
 	/**
-	 * Adds an action that can be triggered by an AR View to the library.
-	 * You can add an action by either passing a name and an anonymous function, or just a named function.
-	 * The service is returned so that you can chain calls to addAction().
-	 * @param name_or_function The name of the function to add if it's a string, or the function to add if it's a named function.
-	 * @param callback The function to add, if the first argument is a String.
+	 * TODO : Commenter la méthode
+	 * @param withUI
+	 * @param fileName
+	 * @returns {Function}
+	 */
+	function captureScreen(withUI, fileName) {
+		if (typeof withUI !== 'boolean') throw new TypeError('Ionicitude - captureScreen() expects first parameter to be of type \'boolean\', \'' + typeof withUI + '\' given.');
+		if (typeof fileName !== 'string') throw new TypeError('Ionicitude - captureScreen() expects second parameter to be \'null\' or of type \'string\', \'' + typeof fileName + '\' given.');
+		var q = $q.defer();
+		plugin.captureScreen(withUI, fileName, function (success) {
+			q.resolve(success);
+		}, function (error) {
+			q.reject(error);
+		});
+		return q.promise;
+	}
+
+	/**
+	 * Adds an Action to the Ionicitude Action Library that can then be triggered by an AR View, with a 'document.location' statement.
+	 * You can add an action by either passing a name and an anonymous callback, or just a named callback.
+	 * The Ionicitude Service is returned so that you can chain calls to addAction().
+	 * @param {string|function} name_or_function The name of the function to add if it's a string, or the function to add if it's a named function.
+	 * @param {null|function}callback The function to add, if the first argument is a String.
+	 * @return {Object} The Ionicitude service
+	 * @throws TypeError
+	 * @throws SyntaxError
 	 */
 	function addAction(name_or_function, callback) {
 		if (typeof name_or_function === 'string' || name_or_function instanceof String) {
@@ -101,7 +129,7 @@ function Ionicitude($q) {
 			checkUsedName(name);
 			lib[name] = name_or_function;
 		} else {
-			throw new TypeError('Ionicitude - addAction() expects first argument to be of type \'string\' or \'function\', \'' + typeof name_or_function + '\' given');
+			throw new TypeError('Ionicitude - addAction() expects first argument to be only of type \'string\' or \'function\', \'' + typeof name_or_function + '\' given');
 		}
 		return service;
 
@@ -153,6 +181,7 @@ function Ionicitude($q) {
 			console.log('init service starting');
 			initialized = true;
 			loadPlugin();
+			setWrappers();
 			var callback = executeActionCall;
 			if (customCallback()) callback = settings.customCallback;
 			plugin.setOnUrlInvokeCallback(callback);
@@ -202,7 +231,7 @@ function Ionicitude($q) {
 
 	//////////////////// PRIVATE SERVICE METHODS ////////////////////
 
-		/**
+	/**
 	 * Returns the correct path to the HTML file that should be loaded by the launching AR World, based on the given 'world_ref'.
 	 * @param world_ref
 	 */
@@ -275,5 +304,13 @@ function Ionicitude($q) {
 		if (!plugin) {
 			plugin = cordova.require('com.wikitude.phonegap.WikitudePlugin.WikitudePlugin');
 		}
+	}
+
+	function setWrappers() {
+		service.close = plugin.close;
+		service.hide = plugin.hide;
+		service.show = plugin.show;
+		service.callJavaScript = plugin.callJavaScript;
+		service.setLocation = plugin.setLocation;
 	}
 }

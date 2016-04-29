@@ -19,11 +19,11 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
     - ["I didn't add my platforms yet..."](#i-didnt-add-my-platforms-yet)
     - ["Damn, I already added my platforms!"](#damn-i-already-added-my-platforms)
     - ["How can I know it worked?"](#how-can-i-know-it-worked)
-  - [Known bugs](#known-bugs)
+  - [Known Android bugs](#known-android-bugs)
 - [Installing Ionicitude](#installing-ionicitude)
-  - [With `ionic add`](#with-ionic-add)
-  - [Manually](#manually)
-  - [Registering the dependency](#registering-the-dependency)
+  - [1a. With `ionic add`](#1a-with-ionic-add)
+  - [1b. Manually](#1b-manually)
+  - [2. Registering the dependency](#2-registering-the-dependency)
 - [Initialization](#initialization)
 - [Checking Device's Features](#checking-devices-features)
 - [Launching an AR World](#launching-an-ar-world)
@@ -35,13 +35,18 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
     - [From: AR View, To: Ionic App](#from-ar-view-to-ionic-app)
     - [From: Ionic App, To: AR View](#from-ionic-app-to-ar-view)
   - [Ionicitude Callback Handling Mechanism (CHM)](#ionicitude-callback-handling-mechanism-chm)
-    - [AR View URL format](#ar-view-url-format)
+    - [`document.location` URL format](#documentlocation-url-format)
       - [Valids AR View's URL](#valids-ar-views-url)
       - [Invalids AR View's URL](#invalids-ar-views-url)
-    - [Use custom CHM](#use-custom-chm)
-  - [CHM Function Mapping](#chm-function-mapping)
-    - [Registering functions](#registering-functions)
-    - [Using custom function library](#using-custom-function-library)
+    - [CHM Function Mapping](#chm-function-mapping)
+      - [Registering Actions](#registering-actions)
+      - [Action's arguments](#actions-arguments)
+- [API Definition](#api-definition)
+  - [`init()`](#init)
+  - [`checkDevice()`](#checkdevice)
+  - [`addAction()`](#addaction)
+  - [`launchAR()`](#launchar)
+  - [`callJavaScript()`](#calljavascript)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -224,7 +229,7 @@ Ionicitude.init({
 });
 ```
 
-**Any string in `reqFeatures` that doesn't references a valid Wikitude feature will not cause the check to fail. It will just be ignored.**
+**Any string in `reqFeatures` that doesn't reference a valid Wikitude feature will not cause the check to fail. It will just be ignored.**
 
 The result of the check will be stored and available through the `Ionicitude.deviceSupportsFeatures` property, as a Boolean.
 
@@ -253,10 +258,10 @@ More advanced Worlds contains an HTML file, one or several JS files (with your c
 In order to correctly launch your AR Worlds, Ionicitude expects three things:
 
 1. You have a folder named `wikitude-worlds` in your app's `www` folder _(optionnal, see below)_
-2. Each of your AR World is contained in a single folder inside `wikitude-worlds`
+2. Each of your AR World is contained in a single folder inside `wikitude-worlds` _(name is as you like)_
 3. Each AR World folder contains at least an HTML file named `index.html`
 
-If you want to use another name than `wikitude-worlds` for your AR Worlds' root folder, you can do that by telling Ionicitude what folder you want to use by passing an object argument to `Ionicitude.init()` with at least a `worldsRootFolder` property:
+If you want to use another name than `wikitude-worlds` for your AR Worlds' root folder, you can do that by passing an object argument with at least a `worldsRootFolder` property when calling `Ionicitude.init()`:
 
 ```javascript
 Ionicitude.init({
@@ -264,16 +269,16 @@ Ionicitude.init({
 });
 ```
 
-**You should still follow rules #2 et #3. Otherwise, your world will not load correctly and you won't know why, because Wikitude does not throw an error if the file does not exists...**
+**You must still follow rules #2 et #3. Otherwise, your world will not load correctly and you won't know why, because Wikitude does not throw an error if the file does not exists...**
 
-In the and, your files organization should look like this:
+In the end, your files organization should look like this:
 
 ```
 application-root/
 	...
 	www/
 		...
-		wikitude-worlds/
+		wikitude-worlds/ **Or whatever name you like**
 			world-foo/
 				index.html
 				... some other files or folders ...
@@ -322,18 +327,20 @@ To overcome this, the Wikitude staff added some mechanism for the two WebViews t
 
 ### From: AR View, To: Ionic App
 
-Remember when I said earlier that an AR World is ultimately juste HTML/CSS/JS files? Well, whenever one of your AR World's JS file execute a statement that looks like this one...
+Remember when I said earlier that an AR World is ultimately juste HTML/CSS/JS files? Well, whenever one of your AR World's JS file execute a `document.location` statement that starts with `architectsdk://`, like this one...
 
 ```javascript
 // Somewhere in an AR World'JS file
 document.location = 'architectsdk://foo?bar';
 ```
 
-... that's the signal for the AR View that it needs to call a previsouly registered callback function on the Ionic App, and pass it the URL _(the value of `document.location`)_ as a String argument. This previsouly registered callback function is then responsible of analyzing, interpreting and executing whatever it's asked to do by the URL.
-
-Thankfully, Ionicitude provides you with it's own way of doing this, so you don't have to worry about it. See [Ionicitude Callback Handling Mechanism](#ionicitude-callback-handling-mechanism-chm) for the details.
+... that's the signal for the AR View that it needs to call a previsouly registered callback function on the Ionic App, and pass it the URL _(the value of `document.location`)_ as a String argument.
 
 ![Callback Function](docs/callback-function.jpg)
+
+This previsouly registered callback function is then responsible of analyzing, interpreting and executing whatever it's asked to do by the URL.
+
+Thankfully, Ionicitude provides you with it's own way of doing this, so you don't have to worry about it. See [Ionicitude Callback Handling Mechanism](#ionicitude-callback-handling-mechanism-chm) for the details.
 
 ### From: Ionic App, To: AR View
 If you want your Ionic App to trigger some behavior in the AR View (send a bunch of data to be displayed in reaction of an AR View call, for example), you can use `Ionicitude.callJavaScript()` _(mind the capital 'S')_ to do so. 
@@ -353,100 +360,158 @@ This method is designed to be used inside a function called by the AR View with 
 
 
 ## Ionicitude Callback Handling Mechanism (CHM)
-Ionicitude comes with it's own Callback Handling Mechanism (CHM) to deal with `document.location` calls. It is enabled by default when calling `Ionicitude.init()`, but you can use your own if you like. You'd just have to pass an object with at least a `customCallback` property as an argument to the `Ionicitude.init()` function. The value of `customCallback` must be a function that takes one argument:
+Ionicitude comes with it's own Callback Handling Mechanism (CHM) to deal with `document.location` calls. It is enabled by default when calling `Ionicitude.init()`, but you can use your own if you like. You'd just have to pass an object with at least a `customCallback` property as an argument to the `Ionicitude.init()` function. The value of `customCallback` must be a function that takes one argument, the URL:
 
 ```javascript
 Ionicitude.init({
 	// Using your custom CHM over Ionicitude's one.
 	customcallback: function(arViewUrl) {
-		// Do whatever handling you want to do with every document.location call from an AR View
+		// Do whatever handling you want to do with every document.location call's URL received from an AR View
 	}
 });
 ```
 
-**If you do use your personnal CHM, you can skip the end of this section.**
+**If you do use your personnal CHM, you can skip the rest of this section.**
 
 ### `document.location` URL format
 
 Ionicitude's CHM requires that every URL passed as a value to `document.location` in an AR World's JS file follows a particular format.
 
 1. It needs to start with `architectsdk://`, as this is a requirement from the Wikitude plugin.
-2. The following characters must be the name of the function that will be ultimately called, what I call the Action.
-3. If the Action have an argument, its function name must be followed by the `?` character
-4. The argument to the Action's function must be a valid litteral JSON object. If the function needs more than one argument, then just add more properties to this JSON object and access them on your function body.
+2. The following characters must be the name of the Action that the AR View want the IonicApp to execute, or, in other words, the name of the function that will be executed by the IonicApp.
+3. If the Action takes an argument, the name in point #2 must be followed by the `?` character.
+4. The remaining characters must form a valid JSON Object declaration, with each of its property being one argument to the Action's function.
 
 #### Valids AR View's URL
-All the following URLs will be correctly interpreted and executed:
+All the following `document.location`'s URLs will be correctly interpreted and executed:
 
-* `architectsdk://foo` will translate to `foo();`
-* `architectsdk://foo?{"bar":"baz"}` will translate to `foo({bar: 'baz'});`
-* `architectsdk://foo?{"bar": 1, "baz": {"fooBar": 123}}` will translate to `foo({bar: 1, baz: {fooBar: 123}});`
+* `"architectsdk://foo"` will call the `foo` function with no argument
+* `"architectsdk://foo?{"bar":"baz"}"` will call the `foo` function with `{bar: "baz"}` as its argument
+* `"architectsdk://foo?{"bar": 1, "baz": {"fooBar": 123}}"` will call the `foo` function with `{bar: 1, baz: {fooBar: 123}}` as its argument
 
 #### Invalids AR View's URL
-All the following URLs will fail, throwing a SyntaxError:
+All the following URLs will fail, throwing a `SyntaxError`:
 
-* `foo` - every URL must starts with `architectsdk://`
-* `architectsdk://foo()` - `foo()` is not a correct function name
-* `architectsdk://foo{"bar": "baz"}` - the function argument must be preceded by the `?` character
-* `architectsdk://foo?bar` - the function's argument must be a valib litteral JSON object
-
+* `foo` - URL does not start with `architectsdk://`
+* `architectsdk://foo()` - the parenthesis must not be present
+* `architectsdk://foo{"bar": "baz"}` - the `?` character is missing between the function's name and the JSON Object argument
+* `architectsdk://foo?bar` - the characters following the `?` must form a valid JSON Object.
 
 ### CHM Function Mapping
-Obviously, the Action name that you pass in the `document.location`'s URL must match an existing function, somewhere. By default, Ionicitude's CHM will try and execute this function from it's own Action library component. But because Ionicitude is _(sadly)_ not omniscient, it can not already contain everything that your AR View could call. 
+Obviously, the Action name that you pass in the `document.location`'s URL must match an existing function, somewhere. By default, Ionicitude's CHM will try and execute this function from it's own Action library component. But because Ionicitude is _(sadly)_ not omniscient, it can not already contain everything that your AR View could call. In fact, its kinda empty in the beginning.
 
 #### Registering Actions
-That's why you have to register an Action to Ionicitude's library before calling it from inside an AR View. Do this by calling `Ionicitude.addAction()` and passing it either a name and an anonymous function, or just a **named** function.
+You'll have to register an Action to Ionicitude's library before calling it from inside an AR View. Do this by calling `Ionicitude.addAction()` and passing it either a **name** and an **anonymous** function as a callback, or just a **named** function. **Anything else will throw an Error.**
+
+This is **OK**:
 
 ```javascript
-// This is OK:
 Ionicitude.addAction('foo', function() {
-	// Some code...
+	// Give a string name and an anonymous function.
 });
+```
 
-// This is also OK:
+```javascript
 function foo() {
-	// Some code...
+	// Declare the function and then give it to the method.
 }
 
 Ionicitude.addAction(foo);
+```
 
-// This is NOT OK:
+```javascript
+Ionicitude.addAction(function foo() {
+	// Give a named function directly to the method.
+});
+```
+
+This is **NOT OK**:
+```javascript
 Ionicitude.addAction(function() {
-	// Some code...
+	// Don't pass only an anonymous function.
 });
 ```
 
-When called by Ionicitude's CHM, an Action function will receive two arguments:
+**Be sure to register the Action BEFORE your AR View calls it.**
 
-* `plugin`: The Wikitude plugin, if you need to call any method from the Wikitude plugin API (such as `close()` or `callJavaScript`)
-* `param`: An object containing, as its properties, your function's arguments, if provided by the `document.location` statement (see [`document.location` URL format](#document-location-url-format)).
+To register multiple Actions one after another, you can simply chain your calls to `Ionicitude.addAction()`:
+_Note that you can obvisouly use either above-described ways to chain-register Actions_
 
 ```javascript
-// Registering an Action that doesn't need neither the plugin nor argument
-Ionicitude.addAction();
+function foo() { /* Some code */ }
+function bar() { /* Some code */ }
+function baz() { /* Some code */ }
 
-// Registering an Action that needs only the plugin
-Ionicitude.addAction();
-
-// Registering an Action that needs both the plugin and argument,
-// or an Action that don't need the plugin but tales an argument
-Ionicitude.addAction();
+Ionicitude
+	.addAction(foo)
+	.addAction(bar)
+	.addAction(baz);
 ```
 
-**Be sure to register the function BEFORE your AR View calls it.**
-### Using custom function library
-If you don't want to register every single function with `Ionicitude.registerFunction()`, you can also tell Ionicitude to use your own library object, that will contains all the function needed by your AR Views. Do that by passing an object with at least a `functionLibrary` property as an argument to `Ionicitude.init()`:
+#### Action's arguments
+When called by Ionicitude's CHM, a registered Action's callback will receive two arguments:
 
+* `service`: The Ionicitude service, if you need to call any method from its [API](#api-definition)
+* `param`: An object containing, as its properties, your callback's arguments, when provided by the `document.location` statement (see [`document.location` URL format](#documentlocation-url-format))
+
+#### Full example
+
+To wrap up all this Action business, here is a example.
+
+Let's say that your `document.location` statement looks like this:
 ```javascript
-Ionicitude.init({
-	functionLibrary: {
-		foo: function(){
-			// Some code	
-		},
-		bar: function(JSON_Object){
-			// Some code
-		}
-	},
-	// Other init params...
+// In your AR View's JS
+document.location = 'architectsdk://foo?{"bar":"Some argument value", "baz": 125.252}'
+```
+
+Then, your `param` argument's value will translate to...
+```javascript
+// You don't have to write this anywhere, it's just a clearer way to look at the data
+{
+	bar: "Some argument value",
+	baz: 125.252
+}
+```
+... and your `foo` Action should be registered like this...
+```javascript
+// Somwhere in your IonicApp's JS, but after calling Ionicitude.init()
+Ionicitude.addAction(function foo(service, param) {
+	// You can access your param properties
+	console.log(param.bar); // Will print : "Some argument value"
+	console.log(param.baz); // Will print : 125.252
+	
+	// You can also access the Ionicitude service API
+	service.close(); // Or any other API's function
 });
 ```
+
+**If your Action only needs the `param` argument without the `service` one, its callback still must accept the two arguments in the right order : `function foo(service, param) { ... }`.**
+**But if your Action needs only to interact with the `service`, its callback could accept one argument : `function foo(service) { ... }`.**
+
+# API Definition
+
+## `addAction()`
+
+**Arguments**
+Type|Name|Description
+----|----|-----------
+String or Function|name_or_function|description
+Function|callback|description
+
+## `callJavaScript()`
+
+## `captureScreen()`
+
+## `checkDevice()`
+
+## `close()`
+
+## `hide()`
+
+## `init()`
+
+## `launchAR()`
+
+## `show()`
+
+## `setLocation()`
