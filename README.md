@@ -36,17 +36,18 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
     - [From: Ionic App, To: AR View](#from-ionic-app-to-ar-view)
   - [Ionicitude Callback Handling Mechanism (CHM)](#ionicitude-callback-handling-mechanism-chm)
     - [`document.location` URL format](#documentlocation-url-format)
-      - [Valids AR View's URL](#valids-ar-views-url)
-      - [Invalids AR View's URL](#invalids-ar-views-url)
-    - [CHM Function Mapping](#chm-function-mapping)
-      - [Registering Actions](#registering-actions)
-      - [Action's arguments](#actions-arguments)
+    - [CHM Actions Mapping](#chm-actions-mapping)
 - [API Definition](#api-definition)
-  - [`init()`](#init)
-  - [`checkDevice()`](#checkdevice)
   - [`addAction()`](#addaction)
-  - [`launchAR()`](#launchar)
   - [`callJavaScript()`](#calljavascript)
+  - [`captureScreen()`](#capturescreen)
+  - [`checkDevice()`](#checkdevice)
+  - [`close()`](#close)
+  - [`hide()`](#hide)
+  - [`init()`](#init)
+  - [`launchAR()`](#launchar)
+  - [`show()`](#show)
+  - [`setLocation()`](#setlocation)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -397,7 +398,7 @@ All the following URLs will fail, throwing a `SyntaxError`:
 * `architectsdk://foo{"bar": "baz"}` - the `?` character is missing between the function's name and the JSON Object argument
 * `architectsdk://foo?bar` - the characters following the `?` must form a valid JSON Object.
 
-### CHM Function Mapping
+### CHM Actions Mapping
 Obviously, the Action name that you pass in the `document.location`'s URL must match an existing function, somewhere. By default, Ionicitude's CHM will try and execute this function from it's own Action library component. But because Ionicitude is _(sadly)_ not omniscient, it can not already contain everything that your AR View could call. In fact, its kinda empty in the beginning.
 
 #### Registering Actions
@@ -497,17 +498,17 @@ When called, the callback will be passed to arguments: `service`, the Ionicitude
 
 The Ionicitude Service is returned so that you can chain calls to `addAction()`.
 
-### Arguments
+#### Arguments
 
 Name|Type|Description
 ----|----|-----------
 name_or_function|`STRING`/`FUNCTION`|If `STRING`, the name of the Action to add. If named `FUNCTION`, the Action to add under the same name.
 callback|`FUNCTION`|_[Optionnal]_ If `name_or_function` is of type `STRING`, an anonymous function to add as the Action.
 
-### Returns
+#### Returns
 - `OBJECT` - The Ionicitude Service
 
-### Throws
+#### Throws
 - `TypeError` when
 	1. `name_or_function` is neither a `STRING` nor a `FUNCTION`
 	2. `name_or_function` is a `STRING` and `callback` is not present or `null`
@@ -516,7 +517,7 @@ callback|`FUNCTION`|_[Optionnal]_ If `name_or_function` is of type `STRING`, an 
 - `SyntaxError` when
 	1. The name of the Action to add has already been used for a previsouly registered Action
 
-### Usage
+#### Usage
 ```javascript
 Ionicitude
 	.addAction('foo', function(service) {
@@ -538,13 +539,13 @@ _This is a just a wrapper around the Wikitude plugin's `callJavaScript` function
 
 Allows you to executre a JavaScript statement from the IonicApp into the context of the currently active AR View.
 
-### Arguments
+#### Arguments
 
 Name|Type|Description
 ----|----|-----------
 js|`STRING`|A litteral javascript statement to execute in the context of the currently active AR View.
 
-### Usage
+#### Usage
 ```javascript
 Ionicitude.callJavaScript('alert(\'Hello\')');
 ```
@@ -553,16 +554,16 @@ Ionicitude.callJavaScript('alert(\'Hello\')');
 _This is a wrapper around the Wikitude plugin's captureScreen function that implements promises instead of callbacks. See [Official Doc](http://www.wikitude.com/external/doc/documentation/latest/phonegap/referencephonegap.html#capturescreen) for more information._
 
 Allows you to take a screenshot of the currently active AR View.
-### Arguments
+#### Arguments
 Name|Type|Description
 ----|----|-----------
 withUI|`BOOLEAN`|Indicates wether or not the AR View UI should be part of the screenshot.
 fileNameOrPath|`STRING`/`NULL`|If it's a file name or a file path, the screenshot will be saved in the application bundle. If `NULL`, the screenshot will be saved in the device photo gallery.
 
-### Returns
+#### Returns
 - `PROMISE` - A promise of a screenshot.
 
-### Usage
+#### Usage
 ```javascript
 Ionicitude.captureScreen(true) // Screenshot will contain AR View UI and will be saved in the photo gallery.
 	.then(function(success) {
@@ -581,10 +582,10 @@ The result of the check will be available through the `Ionicitude.deviceSupports
 
 By default, the needed features are `geo` and `2d_tracking`. You can change that by passing an argument to `Ionicitude.init()` (see [API Definition > `init()`](#init) for information).
 
-### Returns
+#### Returns
 - `PROMISE` - A promise of a check result.
 
-### Usage
+#### Usage
 ```javascript
 Ionicitude.checkDevice()
 	.then(function(success) {
@@ -600,7 +601,7 @@ _This is a just a wrapper around the Wikitude plugin's `close` function. See [Of
 
 Close the currently active AR View, and returns to the IonicApp last view.
 
-### Usage
+#### Usage
 ```javascript
 Ionicitude.close();
 ```
@@ -609,7 +610,7 @@ _This is a just a wrapper around the Wikitude plugin's `hide` function. See [Off
 
 Allows you to hide the currently active AR View, in order to show it again at a later time using Ionicitude.show() (see [API Definition > `show()`](#show) for details).
 
-### Usage
+#### Usage
 ```javascript
 Ionicitude.hide();
 ```
@@ -620,7 +621,7 @@ This initialization first loads up the Wikitude plugin, then sets up the Ionicit
 
 **Note that this method is designed to be called one time, and one time only. If you call it a second time, ~~you'll break the space-time continuum~~ nothing will happen.**
 
-### Arguments
+#### Arguments
 You can change the method's default behavior or modify some of the service's settings by passing an **object** as the method's argument. This object can have the following properties, that are all optionnal:
 
 Name|Type|Description
@@ -631,10 +632,10 @@ reqFeatures|`ARRAY`|Default `['geo', '2d_tracking']`. An array of strings indica
 worldLoadConfig|`OBJECT`|Default `{camera_position: 'back'}`. An object of additionnal settings for the AR Views. For now only one setting is available, `camera_position`, that can be either `front` (to use the device front camera) or `back` (to use the device back camera).
 worldsRootFolder|`STRING`|Default `"wikitude-worlds"`. A string that references a folder's name in your app in which your AR Worlds' folders are stored (see [Expected File Organization](#expected-file-organization) for more information).
 
-### Returns
+#### Returns
 - `OBJECT` - The Ionicitude Service.
 
-### Usage
+#### Usage
 ```javascript
 // Full default usage
 Ionicitude.init();
@@ -654,19 +655,19 @@ Launch an AR World with the Wikitude plugin, and returns a promise. This creates
 
 By default, the folder containing the AR World's files must be contained inside a folder named "wikitude_worlds" at your app's root. If you want to change the name of this folder (or event it's path), you can by passing an argument to `Ionicitude.init()` (see [API Definition > `init()` ](#init)for details).
 
-### Argument
+#### Argument
 Name|Type|Description
 ----|----|-----------
 world_ref|`STRING`|The name of the folder that contains the files for the AR World to launch. This folder must exist in the `worldsRootFolder`
 
-### Returns
+#### Returns
 - `PROMISE` - A promise of a launched AR World.
 
-### Throws
+#### Throws
 - `UnsupportedFeatureError` when:
 	1. Trying to launch an AR World that requires features not supported by the device
 
-### Usage
+#### Usage
 ```javascript
 Ionicitude.launchAR("my_world_folder_name")
 	.then(function(success) {
@@ -682,7 +683,7 @@ _This is a just a wrapper around the Wikitude plugin's `show` function. See [Off
 
 Allows you to show a previously hidden AR View.
 
-### Usage
+#### Usage
 ```javascript
 Ionicitude.show();
 ```
@@ -693,7 +694,7 @@ Use this function to inject a user's location into the currently active AR View.
 
 _It's not clear in the Wikitude documentation wether this method should be used for testing purpose (since they use the world "simulated" in the arguments description) or for production purpose. Anyway... since Wikitude automatically tracks the device location on a geolocalization-based AR World, you shouldn't need to call this method._
 
-### Arguments
+#### Arguments
 Name|Type|Description
 ----|----|-----------
 latitude|`NUMBER`|The latitude (in decimal degree) of the location to inject.
@@ -701,7 +702,7 @@ longitude|`NUMBER`|The longitude (in decimal degree) of the location to inject.
 altitude|`NUMBER`|The altitude (in meters) of the location to inject.
 accuracy|`NUMBER`|The accuracy (in meters) of the location's data.
 
-### Usage
+#### Usage
 ```javascript
 Ionicitude.setLocation(31.2543139, -24.258480555555554, -10000, 20000):
 ```
