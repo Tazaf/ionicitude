@@ -493,6 +493,7 @@ Ionicitude.addAction(function foo(service, param) {
 ## `addAction()`
 
 **Arguments**
+
 Type|Name|Description
 ----|----|-----------
 String or Function|name_or_function|description
