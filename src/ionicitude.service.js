@@ -143,7 +143,7 @@ function Ionicitude($q) {
 	}
 
 	/**
-	 * Checks if the device supports the features needed by the ARchitect World.
+	 * Checks if the device supports the features needed by the AR World.
 	 * The result of this check is available through the deviceSupportsFeatures property of the Ionicitude service
 	 * for it to be used later (alerting the user that he's/she's device is not compatible, for instance).
 	 * @return {Promise} A promise of a check result.
