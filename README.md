@@ -11,14 +11,15 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 
 
 - [Introduction](#introduction)
+  - [Disclaimer](#disclaimer)
   - [What is the cordova Wikitude plugin?](#what-is-the-cordova-wikitude-plugin)
     - [Important note](#important-note)
 - [Installing the Cordova Wikitude plugin](#installing-the-cordova-wikitude-plugin)
   - [Wikitude Licence Key](#wikitude-licence-key)
   - [Android platform version ^5.0.0](#android-platform-version-%5E500)
-    - ["I didn't add my platforms yet..."](#i-didnt-add-my-platforms-yet)
-    - ["Damn, I already added my platforms!"](#damn-i-already-added-my-platforms)
-    - ["How can I know it worked?"](#how-can-i-know-it-worked)
+    - [You didn't add any platform ?](#you-didnt-add-any-platform-)
+    - [You already added your platform(s) ?](#you-already-added-your-platforms-)
+    - [How to check it worked](#how-to-check-it-worked)
   - [Known Android bugs](#known-android-bugs)
 - [Installing Ionicitude](#installing-ionicitude)
   - [1a. With `ionic add`](#1a-with-ionic-add)
@@ -28,10 +29,10 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 - [Checking Device's Features](#checking-devices-features)
 - [Launching an AR World](#launching-an-ar-world)
   - [What's an AR World](#whats-an-ar-world)
-  - [Expected file organization](#expected-file-organization)
+  - [Expected files organization](#expected-files-organization)
   - [Actually launching an AR World](#actually-launching-an-ar-world)
 - [Interaction between the Ionic app and the AR View](#interaction-between-the-ionic-app-and-the-ar-view)
-  - [Boring (but important) explanations ahead!](#boring-but-important-explanations-ahead)
+  - [Important explanations ahead!](#important-explanations-ahead)
     - [From: AR View, To: Ionic App](#from-ar-view-to-ionic-app)
     - [From: Ionic App, To: AR View](#from-ionic-app-to-ar-view)
   - [Ionicitude Callback Handling Mechanism (CHM)](#ionicitude-callback-handling-mechanism-chm)
@@ -265,7 +266,7 @@ Ionicitude.checkDevice()
 
 The most simplistic AR World possible is just an HTML file (generally `index.html`), that loads up all the Wikitude logic. **See [this Gist](https://gist.github.com/Tazaf/5209e26e9a66e5eb526ed5ad34152586) for a blank minimal `index.html` file to use in your new AR Worlds.**
 
-More advanced AR Worlds contains an HTML file, one or several JS files (with your custom code or third party libraries), maybe some CSS, perhaps some image-tracking related files (specific to Wikitude, see [their documentation](view-source:http://www.wikitude.com/external/doc/documentation/latest/phonegap/targetmanagement.html) for more information) or whatever file is useful for this particular AR World..
+More advanced AR Worlds contains an HTML file, one or several JS files (with your custom code or third party libraries), maybe some CSS, perhaps some image-tracking related files (specific to Wikitude, see [their documentation](http://www.wikitude.com/external/doc/documentation/latest/phonegap/targetmanagement.html) for more information) or whatever file is useful for this particular AR World..
 
 ## Expected files organization
 In order to correctly launch your AR Worlds, Ionicitude expects three things:
@@ -274,7 +275,7 @@ In order to correctly launch your AR Worlds, Ionicitude expects three things:
 2. Each of your AR World is contained in a single folder _(named as you like)_ inside `wikitude-worlds`
 3. Each AR World folder contains at least an HTML file named `index.html`
 
-If you want to use another name than `wikitude-worlds` for your AR Worlds' root folder, you can do that by passing an object argument with at least a `worldsRootFolder` property when calling `Ionicitude.init()`:
+If you want to use another name than `wikitude-worlds` for your AR Worlds' root folder (point #1), you can do that by passing an object argument with at least a `worldsRootFolder` property when calling `Ionicitude.init()`:
 
 ```javascript
 Ionicitude.init({
@@ -282,7 +283,7 @@ Ionicitude.init({
 });
 ```
 
-**You must still follow rules #2 et #3. Otherwise, your world will not load correctly and you won't know why, because Wikitude does not throw an error if the file does not exists** (and I didn't implement a way to check that... yet.)
+**You must still follow rules #2 et #3. Otherwise, your world will not load correctly and you won't know why, because Wikitude does not throw an error if you try to load a file that doesn't exist**
 
 In the end, your files organization should look like this:
 
@@ -326,13 +327,13 @@ Ionicitude.launchAR()
 	});
 ```
 
-**:warning: Note that if the device wants to launch an AR World but passed the `checkDevice()` check with a negative outcome, `Ionicitude.launchAR()` will throw an `UnsupportedFeatureError`.**
+**:warning: Note that if you try to launch an AR World on a device that didn't successfully passed the `checkDevice()` check, `Ionicitude.launchAR()` will throw an `UnsupportedFeatureError`.**
 
 # Interaction between the Ionic app and the AR View
 
 ## Important explanations ahead!
 
-It's very important to understand that when the Wikitude plugin launches an AR View, it does not so in the context of your Ionic App. It creates a completely new, independant, agnostic WebView, that comes over your Ionic App WebView (check the following diagram). That means that all your data, scopes, services, controllers or whatever your app is using are complete strangers for the AR View.
+It's very important to understand that when the Wikitude plugin launches an AR View, it does not so in the context of your Ionic App. It creates a completely new, independant, agnostic WebView, that comes over your Ionic App WebView (check the following diagram). This means that all your data, scopes, services, controllers or whatever your app is using are complete strangers for the AR View.
 
 ![New AR View - Diagram](docs/new-ar-view.jpg)
 
@@ -356,11 +357,17 @@ This previsouly registered callback function is then responsible of analyzing, i
 Thankfully, Ionicitude provides you with it's own way of doing this, so you don't have to worry about it. See [Ionicitude Callback Handling Mechanism](#ionicitude-callback-handling-mechanism-chm) for the details.
 
 ### From: Ionic App, To: AR View
-If you want your Ionic App to trigger some behavior in the AR View (send a bunch of data to be displayed in reaction of an AR View call, for example), you can use `Ionicitude.callJavaScript()` _(mind the capital 'S')_ to do so. 
+If you want your Ionic App to trigger some behavior in the AR View (in reaction to an AR View `document.location` call, for example), you can use `Ionicitude.callJavaScript()` _(mind the capital 'S')_ to do so.
+
+----------
+_Please, see [API Definition > `callJavaScript()`](#calljavascript) for details about this method._
+
+----------
+
 
 **For now, this method is just a wrapper around the Wikitude's `callJavaScript` function.**
 
-This method works kind of like `eval()`. You just pass it a javascript statement as a String argument, and it will try to execute it on the context of the AR View. 
+This method works kindda like `eval()`. You pass it a javascript statement as a String argument, and it will try to execute this statement on the context of the AR View. 
 
 ```javascript
 // Somewhere in your Ionic code
@@ -369,7 +376,7 @@ Ionicitude.callJavascript('getQuestion(42)');
 
 This will call the `getQuestion()` function, passing it `42` as it's only argument. **Note that `getQuestion()` must be defined in an AR World's JS files, not on your Ionic App's JS.**
 
-This method is designed to be used inside a function called by the AR View with `document.location` (see above). If you try to call `Ionicitude.callJavaScript()` without having any active AR View, nothing will happen.
+This method is designed to be used inside a function called by the AR View using `document.location` (see above). If you try to call `Ionicitude.callJavaScript()` without having any active AR View, nothing will happen.
 
 
 ## Ionicitude Callback Handling Mechanism (CHM)
@@ -388,33 +395,38 @@ Ionicitude.init({
 
 ### `document.location` URL format
 
-Ionicitude's CHM requires that every URL passed as a value to `document.location` in an AR World's JS file follows a particular format.
+Ionicitude's CHM requires that every URL passed as a value to `document.location` in an AR World's JS follows a particular format.
 
 1. It needs to start with `architectsdk://`, as this is a requirement from the Wikitude plugin.
-2. The following characters must be the name of the Action that the AR View want the IonicApp to execute, or, in other words, the name of the function that will be executed by the IonicApp.
-3. If the Action takes an argument, the name in point #2 must be followed by the `?` character.
-4. The remaining characters must form a valid JSON Object declaration, with each of its property being one argument to the Action's function.
+2. The following characters must be the name of the Action that the AR View want the Ionic App to execute, or, in other words, the name of the function that will be executed by the Ionic App.
+3. If the Action needs argument(s), the name in point #2 must be followed by the `?` character.
+4. If the Action needs argument(s), the remaining characters must form a valid JSON Object declaration. Each of this object property being one of the needed arguments.
 
 #### Valids AR View's URL
 All the following `document.location`'s URLs will be correctly interpreted and executed:
 
-* `"architectsdk://foo"` will call the `foo` function with no argument
-* `"architectsdk://foo?{"bar":"baz"}"` will call the `foo` function with `{bar: "baz"}` as its argument
-* `"architectsdk://foo?{"bar": 1, "baz": {"fooBar": 123}}"` will call the `foo` function with `{bar: 1, baz: {fooBar: 123}}` as its argument
+* `"architectsdk://foo"` will call the `foo` Action with no argument
+* `"architectsdk://foo?{"bar":"baz"}"` will call the `foo` Action with `{bar: "baz"}` as its argument
+* `"architectsdk://foo?{"bar": 1, "baz": {"fooBar": 123}}"` will call the `foo` Action with `{bar: 1, baz: {fooBar: 123}}` as its argument
 
 #### Invalids AR View's URL
 All the following URLs will fail, throwing a `SyntaxError`:
 
 * `foo` - URL does not start with `architectsdk://`
 * `architectsdk://foo()` - the parenthesis must not be present
-* `architectsdk://foo{"bar": "baz"}` - the `?` character is missing between the function's name and the JSON Object argument
+* `architectsdk://foo{"bar": "baz"}` - the `?` character is missing between the Action's name and the JSON Object argument
 * `architectsdk://foo?bar` - the characters following the `?` must form a valid JSON Object.
 
 ### CHM Actions Mapping
-Obviously, the Action name that you pass in the `document.location`'s URL must match an existing function, somewhere. By default, Ionicitude's CHM will try and execute this function from it's own Action library component. But because Ionicitude is _(sadly)_ not omniscient, it can not already contain everything that your AR View could call. In fact, its kinda empty in the beginning.
+Obviously, the Action name that you pass in the `document.location`'s URL must match an existing function, somewhere. By default, Ionicitude's CHM will try and execute this function from it's own Action library. But because Ionicitude is _(sadly)_ not omniscient, it can not already contain everything that your AR View could call. In fact, its kinda empty in the beginning.
 
 #### Registering Actions
-You'll have to register an Action to Ionicitude's library before calling it from inside an AR View. Do this by calling `Ionicitude.addAction()` and passing it either a **name** and an **anonymous** function as a callback, or just a **named** function. **Anything else will throw an Error.**
+You'll have to register an Action to Ionicitude's library before calling it from inside an AR View. Do this by calling `Ionicitude.addAction()` and passing it either a **name** and an **anonymous** function as a callback, or just a **named** function. **Anything else will throw a TypeError.**
+
+----------
+_Please, see [API Definition > `addAction()`](#addaction) for details about this method._
+
+----------
 
 This is **OK**:
 
@@ -448,21 +460,19 @@ Ionicitude.addAction(function() {
 **Be sure to register the Action BEFORE your AR View calls it.**
 
 To register multiple Actions one after another, you can simply chain your calls to `Ionicitude.addAction()`:
-_Note that you can obvisouly use either above-described ways to chain-register Actions_
 
 ```javascript
+// As you can see, the method you chose to use doesn't matter
 function foo() { /* Some code */ }
-function bar() { /* Some code */ }
-function baz() { /* Some code */ }
 
 Ionicitude
 	.addAction(foo)
-	.addAction(bar)
-	.addAction(baz);
+	.addAction('bar', function() { ... })
+	.addAction(function baz() { ... });
 ```
 
 #### Action's arguments
-When called by Ionicitude's CHM, a registered Action's callback will receive two arguments:
+When called by a `document.location` statement, a registered Action's callback will receive two arguments:
 
 * `service`: The Ionicitude service, if you need to call any method from its [API](#api-definition)
 * `param`: An object containing, as its properties, your callback's arguments, when provided by the `document.location` statement (see [`document.location` URL format](#documentlocation-url-format))
@@ -487,7 +497,7 @@ Then, your `param` argument's value will translate to...
 ```
 ... and your `foo` Action should be registered like this...
 ```javascript
-// Somwhere in your IonicApp's JS, but after calling Ionicitude.init()
+// Somwhere in your Ionic App's JS, but after calling Ionicitude.init()
 Ionicitude.addAction(function foo(service, param) {
 	// You can access your param properties
 	console.log(param.bar); // Will print : "Some argument value"
@@ -506,7 +516,7 @@ Ionicitude.addAction(function foo(service, param) {
 ## `addAction()`
 Adds an Action to the Ionicitude Action Library that can then be triggered by an AR View, with a `document.location` statement. You can add an action by either passing a **name** and an **anonymous** callback, or just a **named** callback.
 
-When called, the callback will be passed to arguments: `service`, the Ionicitude Service for you to call any of its method from within the callback, and `param`, the object passed in the `document.location` URL. Declare your callback argument depending on its needs.
+When called, the callback will be passed to arguments: `service`, the Ionicitude Service for you to call any of its method, and `param`, the object passed in the `document.location` URL. Declare your callback argument depending on its needs.
 
 The Ionicitude Service is returned so that you can chain calls to `addAction()`.
 
@@ -514,18 +524,18 @@ The Ionicitude Service is returned so that you can chain calls to `addAction()`.
 
 Name|Type|Description
 ----|----|-----------
-name_or_function|`STRING`/`FUNCTION`|If `STRING`, the name of the Action to add. If named `FUNCTION`, the Action to add under the same name.
-callback|`FUNCTION`|_[Optionnal]_ If `name_or_function` is of type `STRING`, an anonymous function to add as the Action.
+nameOrFunction|`STRING`/`FUNCTION`|If `STRING`, the name of the Action to add. If named `FUNCTION`, the Action to add under the same name.
+callback|`FUNCTION`|_[Optionnal]_ If `nameOrFunction` is of type `STRING`, an anonymous function to add as the Action.
 
 #### Returns
 - `OBJECT` - The Ionicitude Service
 
 #### Throws
 - `TypeError` when
-	1. `name_or_function` is neither a `STRING` nor a `FUNCTION`
-	2. `name_or_function` is a `STRING` and `callback` is not present or `null`
-	3. `name_or_function` is a `STRING` and `callback` is not a `FUNCTION`
-	4. `name_or_function` is an anonymous `FUNCTION`
+	1. `nameOrFunction` is neither a `STRING` nor a `FUNCTION`
+	2. `nameOrFunction` is a `STRING` and `callback` is not present or `null`
+	3. `nameOrFunction` is a `STRING` and `callback` is not a `FUNCTION`
+	4. `nameOrFunction` is an anonymous `FUNCTION`
 - `SyntaxError` when
 	1. The name of the Action to add has already been used for a previsouly registered Action
 
@@ -537,7 +547,7 @@ Ionicitude
 	}
 	.addAction('bar', function(service, param) {
 		// This Action is named 'bar' and can access both
-		// the Ionicitude Service API (although it doesn't need to)
+		// the Ionicitude Service API (even if it doesn't need to)
 		// and as any 'param' it needs
 	}
 	.addAction('baz', function() {
@@ -549,7 +559,7 @@ Ionicitude
 ## `callJavaScript()`
 _This is a just a wrapper around the Wikitude plugin's `callJavaScript` function. See [Official Doc](http://www.wikitude.com/external/doc/documentation/latest/phonegap/referencephonegap.html#calljavascript) for more information._
 
-Allows you to executre a JavaScript statement from the IonicApp into the context of the currently active AR View.
+Allows you to executre a JavaScript statement from the Ionic App into the context of the currently active AR View.
 
 #### Arguments
 
@@ -559,11 +569,12 @@ js|`STRING`|A litteral javascript statement to execute in the context of the cur
 
 #### Usage
 ```javascript
+// Will prompt an alert in the AR View
 Ionicitude.callJavaScript('alert(\'Hello\')');
 ```
 
 ## `captureScreen()`
-_This is a wrapper around the Wikitude plugin's captureScreen function that implements promises instead of callbacks. See [Official Doc](http://www.wikitude.com/external/doc/documentation/latest/phonegap/referencephonegap.html#capturescreen) for more information._
+_This is a wrapper around the Wikitude plugin's captureScreen function but it implements promises instead of callbacks. See [Official Doc](http://www.wikitude.com/external/doc/documentation/latest/phonegap/referencephonegap.html#capturescreen) for more information._
 
 Allows you to take a screenshot of the currently active AR View.
 #### Arguments
@@ -587,12 +598,12 @@ Ionicitude.captureScreen(true) // Screenshot will contain AR View UI and will be
 ```
 
 ## `checkDevice()`
-_This method is called by the Ionicitude.init() method. You can force-skip this call by passing and argument to `Ionicitude.init()` (see [API Definition > `init()`](#init) for details). You will then need to manually call this method before launching an AR World._
+_This method is called by the Ionicitude.init() method. You can force-skip this call by passing and argument to `Ionicitude.init()` (see [API Definition > `init()`](#init) for details). You should then manually call this method before launching an AR World._
 
 Checks if the device supports the features needed by your app.
 The result of the check will be available through the `Ionicitude.deviceSupportsFeatures` property.
 
-By default, the needed features are `geo` and `2d_tracking`. You can change that by passing an argument to `Ionicitude.init()` (see [API Definition > `init()`](#init) for information).
+By default, the needed features against which the device is check are `geo` and `2d_tracking`. You can change that by passing an argument to `Ionicitude.init()` (see [API Definition > `init()`](#init) for information).
 
 #### Returns
 - `PROMISE` - A promise of a check result.
@@ -611,7 +622,7 @@ Ionicitude.checkDevice()
 ## `close()`
 _This is a just a wrapper around the Wikitude plugin's `close` function. See [Official Doc](http://www.wikitude.com/external/doc/documentation/latest/phonegap/referencephonegap.html#close) for more information._
 
-Close the currently active AR View, and returns to the IonicApp last view.
+Close the currently active AR View, and returns to the Ionic App last view.
 
 #### Usage
 ```javascript
@@ -620,7 +631,7 @@ Ionicitude.close();
 ## `hide()`
 _This is a just a wrapper around the Wikitude plugin's `hide` function. See [Official Doc](http://www.wikitude.com/external/doc/documentation/latest/phonegap/referencephonegap.html#hide) for more information._
 
-Allows you to hide the currently active AR View, in order to show it again at a later time using Ionicitude.show() (see [API Definition > `show()`](#show) for details).
+Allows you to hide the currently active AR View, in order to show it again at a later time using `Ionicitude.show()` (see [API Definition > `show()`](#show) for details).
 
 #### Usage
 ```javascript
@@ -628,7 +639,9 @@ Ionicitude.hide();
 ```
 ## `init()`
 **Must be called prior to any other Ionicitude's API call.**
+
 Initializes the Ionicitude Service, then returns it for you to chain methods calls, if necessary.
+
 This initialization first loads up the Wikitude plugin, then sets up the Ionicitude's CHM (see [Ionicitude Callback Handling Mechanism](#ionicitude-callback-handling-mechanism-chm) for more information) and, finally, calls Ionicitude.checkDevice() (see [API Definition > `checkDevice()`](#checkdevice) for more information).
 
 **Note that this method is designed to be called one time, and one time only. If you call it a second time, ~~you'll break the space-time continuum~~ nothing will happen.**
@@ -638,9 +651,9 @@ You can change the method's default behavior or modify some of the service's set
 
 Name|Type|Description
 ----|----|-----------
-customCallback|`FUNCTION`|A function that will be used to handle and react to any `document.location` call executed from an AR View's JS code. The function must take one argument, which will be the value of the `document.location` statement.
+customCallback|`FUNCTION`|Default to [Ionicitude CHM](#ionicitude-callback-handling-mechanism-chm). A function that will be used to handle and react to any `document.location` call executed from an AR View's JS code. This function must take one argument, which will be the value of the `document.location` statement.
 doDeviceCheck|`BOOLEAN`|Default `TRUE`. Pass `FALSE` to skip the `checkDevice()` method call. If you do, you'll need to manually call the method later on.
-reqFeatures|`ARRAY`|Default `['geo', '2d_tracking']`. An array of strings indicating which features are required by your app. Can be `'geo'`, `'2d_tracking'` or both.
+reqFeatures|`ARRAY`|Default `['geo', '2d_tracking']`. An array of strings indicating which features are required by your app. Can be `'geo'`, `'2d_tracking'` or both. Anything else will be ignored.
 worldLoadConfig|`OBJECT`|Default `{camera_position: 'back'}`. An object of additionnal settings for the AR Views. For now only one setting is available, `camera_position`, that can be either `front` (to use the device front camera) or `back` (to use the device back camera).
 worldsRootFolder|`STRING`|Default `"wikitude-worlds"`. A string that references a folder's name in your app in which your AR Worlds' folders are stored (see [Expected File Organization](#expected-file-organization) for more information).
 
@@ -663,21 +676,19 @@ Ionicitude.init({
 ```
 
 ## `launchAR()`
-Launch an AR World with the Wikitude plugin, and returns a promise. This creates and switches the app's focus to a new AR View.
-
-By default, the folder containing the AR World's files must be contained inside a folder named "wikitude_worlds" at your app's root. If you want to change the name of this folder (or event it's path), you can by passing an argument to `Ionicitude.init()` (see [API Definition > `init()` ](#init)for details).
+Launch an AR World with the Wikitude plugin, and returns a promise. This creates a new AR View and switches the app's focus to it.
 
 #### Argument
 Name|Type|Description
 ----|----|-----------
-world_ref|`STRING`|The name of the folder that contains the files for the AR World to launch. This folder must exist in the `worldsRootFolder`
+world_ref|`STRING`|The name of the folder that contains the files for the AR World to launch. This folder must exist in a folder named `"wikitude-worlds"` in your app's `www` directory. If you want to change the name of this folder (or event it's path), you can by passing an argument to `Ionicitude.init()` (see [API Definition > `init()` ](#init)for details).
 
 #### Returns
 - `PROMISE` - A promise of a launched AR World.
 
 #### Throws
 - `UnsupportedFeatureError` when:
-	1. Trying to launch an AR World that requires features not supported by the device
+	1. Trying to launch an AR World that requires features not supported by the device (see [Checking Device's Features](#checking-devices-features))
 
 #### Usage
 ```javascript

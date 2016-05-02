@@ -53,7 +53,14 @@ function Ionicitude($q) {
 		init: init,
 		launchAR: launchAR,
 		addAction: addAction,
-		listLibActions: listLibActions
+		listLibActions: listLibActions,
+		captureScreen: captureScreen,
+		// Wikitude API wrapper. Will be set by init()
+		close: null,
+		hide: null,
+		show: null,
+		callJavaScript: null,
+		setLocation: null
 	};
 
 	/**
@@ -118,25 +125,46 @@ function Ionicitude($q) {
 	}
 
 	/**
-	 * Adds an action that can be triggered by an AR View to the library.
-	 * You can add an action by either passing a name and an anonymous function, or just a named function.
-	 * The service is returned so that you can chain calls to addAction().
-	 * @param name_or_function The name of the function to add if it's a string, or the function to add if it's a named function.
-	 * @param callback The function to add, if the first argument is a String.
+	 * TODO : Commenter la méthode
+	 * @param withUI
+	 * @param fileName
+	 * @returns {Function}
 	 */
-	function addAction(name_or_function, callback) {
-		if (typeof name_or_function === 'string' || name_or_function instanceof String) {
+	function captureScreen(withUI, fileName) {
+		if (typeof withUI !== 'boolean') throw new TypeError('Ionicitude - captureScreen() expects first parameter to be of type \'boolean\', \'' + typeof withUI + '\' given.');
+		if (typeof fileName !== 'string') throw new TypeError('Ionicitude - captureScreen() expects second parameter to be \'null\' or of type \'string\', \'' + typeof fileName + '\' given.');
+		var q = $q.defer();
+		plugin.captureScreen(withUI, fileName, function (success) {
+			q.resolve(success);
+		}, function (error) {
+			q.reject(error);
+		});
+		return q.promise;
+	}
+
+	/**
+	 * Adds an Action to the Ionicitude Action Library that can then be triggered by an AR View, with a 'document.location' statement.
+	 * You can add an action by either passing a name and an anonymous callback, or just a named callback.
+	 * The Ionicitude Service is returned so that you can chain calls to addAction().
+	 * @param {string|function} nameOrFunction The name of the function to add if it's a string, or the function to add if it's a named function.
+	 * @param {null|function}callback The function to add, if the first argument is a String.
+	 * @return {Object} The Ionicitude service
+	 * @throws TypeError
+	 * @throws SyntaxError
+	 */
+	function addAction(nameOrFunction, callback) {
+		if (typeof nameOrFunction === 'string' || nameOrFunction instanceof String) {
 			if (!callback) throw new TypeError('Ionicitude - addAction() expects a second argument if first argument is of type \'string\'.');
 			if (typeof callback !== 'function') throw new TypeError('Ionicitude - addAction() expects second argument to only be of type \'function\', \'' + typeof callback + '\' given.');
-			checkUsedName(name_or_function);
-			lib[name_or_function] = callback;
-		} else if (typeof name_or_function === 'function' || name_or_function instanceof Function) {
-			var name = name_or_function.name;
+			checkUsedName(nameOrFunction);
+			lib[nameOrFunction] = callback;
+		} else if (typeof nameOrFunction === 'function' || nameOrFunction instanceof Function) {
+			var name = nameOrFunction.name;
 			if (!name) throw new TypeError('Ionicitude - addAction() do not accept anonymous function as first argument. Please, try passing a named function instead.');
 			checkUsedName(name);
-			lib[name] = name_or_function;
+			lib[name] = nameOrFunction;
 		} else {
-			throw new TypeError('Ionicitude - addAction() expects first argument to be of type \'string\' or \'function\', \'' + typeof name_or_function + '\' given');
+			throw new TypeError('Ionicitude - addAction() expects first argument to be only of type \'string\' or \'function\', \'' + typeof nameOrFunction + '\' given');
 		}
 		return service;
 
@@ -150,7 +178,7 @@ function Ionicitude($q) {
 	}
 
 	/**
-	 * Checks if the device supports the features needed by the ARchitect World.
+	 * Checks if the device supports the features needed by the AR World.
 	 * The result of this check is available through the deviceSupportsFeatures property of the Ionicitude service
 	 * for it to be used later (alerting the user that he's/she's device is not compatible, for instance).
 	 * @return {Promise} A promise of a check result.
@@ -179,19 +207,23 @@ function Ionicitude($q) {
 	 * - reqFeatures: An array of strings indicating which features are required by your app. Can be 'geo', '2d_tracking' or both.
 	 * - worldLoadConfig: An object of additionnals world load settings.
 	 * - worldsRootFolder: A string that references your app's folder in which your AR Worlds' folders are stored.
-	 * @param settings An object to alter the init behavior or change default settings.
+	 * @param params An object to alter the init behavior or change default settings.
 	 * @returns {Object} The Ionicitude service.
 	 */
-	function init(settings) {
-		console.log(settings);
+	function init(params) {
+		console.log(params);
 		if (!initialized) {
 			console.log('init service starting');
 			initialized = true;
 			loadPlugin();
+			setWrappers();
 			var callback = executeActionCall;
-			if (customCallback()) callback = settings.customCallback;
+			if (customCallback()) callback = params.customCallback;
 			plugin.setOnUrlInvokeCallback(callback);
 			doDeviceCheck() && checkDevice() || console.log('check skipped due to init settings');
+			if (reqFeatures()) settings.reqFeatures = params.reqFeatures;
+			if (worldLoadConfig()) settings.worldLoadConfig = params.worldLoadConfig;
+			if (worldsRootFolder()) settings.worldsRootFolder = params.worldsRootFolder;
 		}
 		return service;
 
@@ -200,7 +232,7 @@ function Ionicitude($q) {
 		 * @returns {boolean}
 		 */
 		function customCallback() {
-			return settings && settings.hasOwnProperty('customCallback') && typeof settings.customCallback === 'function';
+			return params && params.hasOwnProperty('customCallback') && typeof params.customCallback === 'function';
 		}
 
 		/**
@@ -208,7 +240,7 @@ function Ionicitude($q) {
 		 * @returns {boolean}
 		 */
 		function doDeviceCheck() {
-			return !(settings && settings.hasOwnProperty('doDeviceCheck') && settings.doDeviceCheck === false);
+			return !(params && params.hasOwnProperty('doDeviceCheck') && params.doDeviceCheck === false);
 		}
 	}
 
@@ -216,7 +248,7 @@ function Ionicitude($q) {
 	 * Tries to launch the requested AR World, based on the given 'world_ref' and returns a promise of a launch.
 	 * If you try to launch an AR World that requests features not supported by the device, an UnsupportedFeatureError will be thrown.
 	 * @param world_ref The name of an existing folder inside worldsRootFolder, from which to launch an AR World.
-	 * @return {Promise} A promise of a launch.
+	 * @return {Function} A promise of a launch.
 	 * @throws UnsupportedFeatureError If the device does not support any feature requested by the AR World
 	 */
 	function launchAR(world_ref) {
@@ -237,7 +269,7 @@ function Ionicitude($q) {
 
 	//////////////////// PRIVATE SERVICE METHODS ////////////////////
 
-		/**
+	/**
 	 * Returns the correct path to the HTML file that should be loaded by the launching AR World, based on the given 'world_ref'.
 	 * @param world_ref
 	 */
@@ -310,6 +342,14 @@ function Ionicitude($q) {
 		if (!plugin) {
 			plugin = cordova.require('com.wikitude.phonegap.WikitudePlugin.WikitudePlugin');
 		}
+	}
+
+	function setWrappers() {
+		service.close = plugin.close;
+		service.hide = plugin.hide;
+		service.show = plugin.show;
+		service.callJavaScript = plugin.callJavaScript;
+		service.setLocation = plugin.setLocation;
 	}
 }
 })();
