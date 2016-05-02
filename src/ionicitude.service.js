@@ -1,13 +1,33 @@
 /**
- * Defines the main service of the Wikitude module.
- * This is the service that you will inject into your controllers in order to use the Wikitude cordova plugin functions.
+ * Defines the main service of Ionicitude.
+ * This is the service that you will inject into your controllers in order to use the Wikitude cordova plugin functions and the service functions.
  */
 angular
 	.module('IonicitudeModule')
 	.factory('Ionicitude', Ionicitude);
 
 /* @ngInject */
-function Ionicitude($q, plugin, settings, protocol, lib) {
+function Ionicitude($q) {
+	/**
+	 * Defines the service object that will be publicly accessible when injecting the Ionicitude service.
+	 * @type {Object}
+	 */
+	var service = {
+		checkDevice: checkDevice,
+		deviceSupportsFeatures: false,
+		init: init,
+		launchAR: launchAR,
+		addAction: addAction,
+		listLibActions: listLibActions,
+		captureScreen: captureScreen,
+		// Wikitude API wrapper. Will be set by init()
+		close: null,
+		hide: null,
+		show: null,
+		callJavaScript: null,
+		setLocation: null
+	};
+
 	/**
 	 * This is a simple flag to prevent calling the init() public method twice.
 	 * @type {boolean}
@@ -15,48 +35,103 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	var initialized = false;
 
 	/**
-	 * Defines the service object that will be publicaly accessible when injecting the Ionicitude service.
+	 * Defines the value of the url protocol used by Wikitude to call the app from within the AR View.
+	 * This value MUST NOT be altered in any way since it's an internal Wikitude mechanism.
+	 */
+	var protocol = 'architectsdk://';
+
+	/**
+	 * This will store the WikitudePlugin for subsequent uses, after a call to getPlugin().
+	 */
+	var plugin;
+
+	/**
+	 * This is where all the custom Actions that can be called from within an AR View will be stored at runtime, using the addAction() method.
+	 */
+	var lib = {};
+
+	/**
+	 * Defines the default settings of the Wikitude service.
+	 * Each of these settings can be defined when calling the init() method.
 	 * @type {Object}
 	 */
-	var service = {
-		checkDevice: checkDevice,
-		deviceSupportsFeatures: 'pouet',
-		init: init,
-		launchAR: launchAR,
-		addAction: addAction,
-		listLibActions: listLibActions
+	var settings = {
+		/**
+		 * Additionnals world load config.
+		 * For now, there's only one such setting available for the Wikitude plugin : camera_position.
+		 */
+		worldLoadConfig: {camera_position: 'back'},
+		/**
+		 * Defines which features your AR app needs the device to support.
+		 * For now, only two features are available in the cordova WikitudePlugin.
+		 * The first one is 'geo' and is used for any ARchitect World that wants to rely on the user's location.
+		 * The second is '2d_tracking' and is used for any ARchitect World that wants to use image recognition and image tracking.
+		 * More information : http://www.wikitude.com/developer/documentation/phonegap.
+		 * @type {Array}
+		 */
+		reqFeatures: ['geo', '2d_tracking'],
+		/**
+		 * Defines where in your app are stored all your ARchitect World folders.
+		 * This folder should contain sub-folders, one for each of your AR World.
+		 * @type {String}
+		 */
+		worldsRootFolder: 'wikitude-worlds'
 	};
 
 	return service;
 
-	////////////////////
+	//////////////////// PUBLIC SERVICE METHODS ////////////////////
 
+	/**
+	 * Debug method that returns a list of the current Actions that you added using the addAction() method.
+	 */
 	function listLibActions() {
-		console.log(Object.getOwnPropertyNames(lib));
+		return Object.getOwnPropertyNames(lib);
 	}
 
 	/**
-	 * TODO : commenter la méthode
-	 * @param name_or_function
-	 * @param callback
+	 * TODO : Commenter la méthode
+	 * @param withUI
+	 * @param fileName
+	 * @returns {Function}
 	 */
-	function addAction(name_or_function, callback) {
-		if (typeof name_or_function === 'string' || name_or_function instanceof String) {
+	function captureScreen(withUI, fileName) {
+		if (typeof withUI !== 'boolean') throw new TypeError('Ionicitude - captureScreen() expects first parameter to be of type \'boolean\', \'' + typeof withUI + '\' given.');
+		if (typeof fileName !== 'string') throw new TypeError('Ionicitude - captureScreen() expects second parameter to be \'null\' or of type \'string\', \'' + typeof fileName + '\' given.');
+		var q = $q.defer();
+		plugin.captureScreen(withUI, fileName, function (success) {
+			q.resolve(success);
+		}, function (error) {
+			q.reject(error);
+		});
+		return q.promise;
+	}
+
+	/**
+	 * Adds an Action to the Ionicitude Action Library that can then be triggered by an AR View, with a 'document.location' statement.
+	 * You can add an action by either passing a name and an anonymous callback, or just a named callback.
+	 * The Ionicitude Service is returned so that you can chain calls to addAction().
+	 * @param {string|function} nameOrFunction The name of the function to add if it's a string, or the function to add if it's a named function.
+	 * @param {null|function}callback The function to add, if the first argument is a String.
+	 * @return {Object} The Ionicitude service
+	 * @throws TypeError
+	 * @throws SyntaxError
+	 */
+	function addAction(nameOrFunction, callback) {
+		if (typeof nameOrFunction === 'string' || nameOrFunction instanceof String) {
 			if (!callback) throw new TypeError('Ionicitude - addAction() expects a second argument if first argument is of type \'string\'.');
 			if (typeof callback !== 'function') throw new TypeError('Ionicitude - addAction() expects second argument to only be of type \'function\', \'' + typeof callback + '\' given.');
-			checkUsedName(name_or_function);
-			lib[name_or_function] = callback;
-		} else if (typeof name_or_function === 'function' || name_or_function instanceof Function) {
-			var name = name_or_function.name;
+			checkUsedName(nameOrFunction);
+			lib[nameOrFunction] = callback;
+		} else if (typeof nameOrFunction === 'function' || nameOrFunction instanceof Function) {
+			var name = nameOrFunction.name;
 			if (!name) throw new TypeError('Ionicitude - addAction() do not accept anonymous function as first argument. Please, try passing a named function instead.');
 			checkUsedName(name);
-			lib[name] = name_or_function;
+			lib[name] = nameOrFunction;
 		} else {
-			throw new TypeError('Ionicitude - addAction() expects first argument to be of type \'string\' or \'function\', \'' + typeof name_or_function + '\' given');
+			throw new TypeError('Ionicitude - addAction() expects first argument to be only of type \'string\' or \'function\', \'' + typeof nameOrFunction + '\' given');
 		}
 		return service;
-
-		////////////////////
 
 		/**
 		 * Checks if the desired name for this new Action has already been registered or is already used in Ionicitude library.
@@ -68,17 +143,15 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	}
 
 	/**
-	 * TODO : vérifier le commentaire
-	 * Checks if the device supports the features needed by the ARchitect World.
-	 * These features are set with the reqFeatures property of the Ionicitude service.
+	 * Checks if the device supports the features needed by the AR World.
 	 * The result of this check is available through the deviceSupportsFeatures property of the Ionicitude service
 	 * for it to be used later (alerting the user that he's/she's device is not compatible, for instance).
-	 * For conveniency, the result of the check is returned by the function.
+	 * @return {Promise} A promise of a check result.
 	 */
 	function checkDevice() {
 		console.log('checking device');
 		var q = $q.defer();
-		plugin.get().isDeviceSupported(function (success) {
+		plugin.isDeviceSupported(function (success) {
 			console.log(success);
 			service.deviceSupportsFeatures = true;
 			q.resolve(success);
@@ -91,25 +164,40 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	}
 
 	/**
-	 * TODO : commenter la méthode
+	 * Initializes the Ionicitude service, then returns it, for you to chain methods calls, if necessary.
+	 * You can pass an object argument to this method to change it's default behavior or change some of Ionicitude's default settings.
+	 * This object can have the following properties :
+	 * - customCallback: A function that you want to set as your app's Custom Handling Mechanism (CHM). If not provided, the Ionicitude's CHM will be used.
+	 * - doDeviceCheck: Default TRUE. Pass FALSE to skip the checkDevice() method call. If you do, you'll need to manually call the method later on.
+	 * - reqFeatures: An array of strings indicating which features are required by your app. Can be 'geo', '2d_tracking' or both.
+	 * - worldLoadConfig: An object of additionnals world load settings.
+	 * - worldsRootFolder: A string that references your app's folder in which your AR Worlds' folders are stored.
+	 * @param params An object to alter the init behavior or change default settings.
+	 * @returns {Object} The Ionicitude service.
 	 */
-	function init(settings) {
-		console.log(settings);
+	function init(params) {
+		console.log(params);
 		if (!initialized) {
 			console.log('init service starting');
 			initialized = true;
+			loadPlugin();
+			setWrappers();
 			var callback = executeActionCall;
-			if (customCallback()) callback = settings.onUrlInvokeCallback;
-			plugin.get().setOnUrlInvokeCallback(callback);
+			if (customCallback()) callback = params.customCallback;
+			plugin.setOnUrlInvokeCallback(callback);
 			doDeviceCheck() && checkDevice() || console.log('check skipped due to init settings');
+			if (reqFeatures()) settings.reqFeatures = params.reqFeatures;
+			if (worldLoadConfig()) settings.worldLoadConfig = params.worldLoadConfig;
+			if (worldsRootFolder()) settings.worldsRootFolder = params.worldsRootFolder;
 		}
+		return service;
 
 		/**
 		 * Checks if you defined a custom onUrlInvokeCallback in the init function's 'settings' argument.
 		 * @returns {boolean}
 		 */
 		function customCallback() {
-			return settings && settings.hasOwnProperty('customCallback') && typeof settings.customCallback === 'function';
+			return params && params.hasOwnProperty('customCallback') && typeof params.customCallback === 'function';
 		}
 
 		/**
@@ -117,33 +205,37 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 		 * @returns {boolean}
 		 */
 		function doDeviceCheck() {
-			return !(settings && settings.hasOwnProperty('doDeviceCheck') && settings.doDeviceCheck === false);
+			return !(params && params.hasOwnProperty('doDeviceCheck') && params.doDeviceCheck === false);
 		}
 	}
 
 	/**
-	 * TODO : commenter cette méthode
+	 * Tries to launch the requested AR World, based on the given 'world_ref' and returns a promise of a launch.
+	 * If you try to launch an AR World that requests features not supported by the device, an UnsupportedFeatureError will be thrown.
+	 * @param world_ref The name of an existing folder inside worldsRootFolder, from which to launch an AR World.
+	 * @return {Function} A promise of a launch.
+	 * @throws UnsupportedFeatureError If the device does not support any feature requested by the AR World
 	 */
 	function launchAR(world_ref) {
 		if (!world_ref) world_ref = 'main';
 		if (service.deviceSupportsFeatures) {
 			var q = $q.defer();
 			console.log('launch');
-			plugin.get().loadARchitectWorld(function (success) {
+			plugin.loadARchitectWorld(function (success) {
 				q.resolve(success);
 			}, function (error) {
 				q.reject(error);
-			}, getWorldUrl(world_ref), settings.reqFeatures, settings.worldConfig);
+			}, getWorldUrl(world_ref), settings.reqFeatures, settings.worldLoadConfig);
 			return q.promise;
 		} else {
 			throw new UnsupportedFeatureError();
 		}
 	}
 
-	////////////////////
+	//////////////////// PRIVATE SERVICE METHODS ////////////////////
 
 	/**
-	 * TODO : commenter cette méthode
+	 * Returns the correct path to the HTML file that should be loaded by the launching AR World, based on the given 'world_ref'.
 	 * @param world_ref
 	 */
 	function getWorldUrl(world_ref) {
@@ -158,34 +250,26 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 	}
 
 	/**
-	 * TODO : vérifier le commentaire
-	 * This function should be set, with the setOnUrlInvokeCallback method, as the callback function for the 'architectsdk://' call done by the Wikitude AR View.
+	 * Should be set, with the setOnUrlInvokeCallback method, as the callback function for the 'architectsdk://' call done by the Wikitude AR View.
 	 * The string passed as the 'call' argument must be formatted as follow :
-	 * 'architectsdk://name_of_the_function_to_execute[?json_object_containging_any_function_parameters]'
+	 * 'architectsdk://name_of_the_function_to_execute[?json_object_containging_the_function_arguments]'
 	 * Example :
 	 * 'architectsdk://saveClient?{"firstName":"Foo","lastName":"Bar"}'
-	 * This call will execute the saveClient function, passing in an object, containing a firstName and a lastName property, as the parameter.
-	 * @param call A string starting with 'architectsdk://'.
+	 * This call will execute the saveClient function, passing in an object, containing a firstName and a lastName property, as the second argument.
+	 * The desired function will receive the Wikitude plugin as its first argument. This way, you can call any of the Wikitude plugin API functions (close() for example) from within your custom function.
+	 * @param call A string starting with 'architectsdk://' indicating what function the AR View wants to call and, if needed, what argument the function should receive.
 	 */
 	function executeActionCall(call) {
 		var action = parseActionUrl(call);
-		try {
-			lib[action.funcName](action.parameters);
-		} catch (e) {
-			if (e instanceof TypeError) {
-				throw new TypeError(action.funcName + 'is either undefined or not a function in the Ionicitude lib service.');
-			} else {
-				throw e;
-			}
-		}
+		console.log(call, action);
+		if (!lib.hasOwnProperty(action.funcName) || typeof lib[action.funcName] !== 'function') throw new TypeError('\'' + action.funcName + '\' is either undefined or not a function in the Ionicitude service.');
+		lib[action.funcName](plugin, action.parameters);
 	}
 
 	/**
-	 * TODO : vérifier le commentaire
 	 * Parses an url starting with 'architectsdk://' and creates an action object.
 	 * This object will have two properties : funcName and parameters containing, respectively,
 	 * the name of the function that will be called by executeActionCall() and the parameters to this function, if provided.
-	 *
 	 * @param url
 	 * @return {Object}
 	 */
@@ -214,5 +298,22 @@ function Ionicitude($q, plugin, settings, protocol, lib) {
 		} else {
 			throw new SyntaxError('parseActionUrl() expects first parameter to be a string starting with \'' + protocol + '\'.');
 		}
+	}
+
+	/**
+	 * Loads the Wikitude plugin in the private 'plugin' variable.
+	 */
+	function loadPlugin() {
+		if (!plugin) {
+			plugin = cordova.require('com.wikitude.phonegap.WikitudePlugin.WikitudePlugin');
+		}
+	}
+
+	function setWrappers() {
+		service.close = plugin.close;
+		service.hide = plugin.hide;
+		service.show = plugin.show;
+		service.callJavaScript = plugin.callJavaScript;
+		service.setLocation = plugin.setLocation;
 	}
 }

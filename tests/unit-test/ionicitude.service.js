@@ -3,36 +3,7 @@ describe('IonicitudeModule', function () {
   beforeEach(module('IonicitudeModule'));
 
   describe('Ionicitude service', function () {
-    var service, libMock, settingsMock, pluginMock;
-
-    beforeEach(function () {
-      libMock = {
-        foo: jasmine.createSpy('foo'),
-        fooBar: "",
-        barfoo: jasmine.createSpy('barfoo'),
-        already: function(){}
-      };
-
-      settingsMock = {
-        worldsFolders: {
-          foo: {}
-        }
-      };
-
-      pluginMock = {
-        get: function () {
-          return {
-            loadARchitectWorld: jasmine.createSpy('loadARchitectWorld')
-          }
-        }
-      };
-
-      module(function ($provide) {
-        $provide.value('lib', libMock);
-        $provide.value('settings', settingsMock);
-        $provide.value('plugin', pluginMock);
-      })
-    });
+    var service;
 
     beforeEach(inject(function (Ionicitude) {
       service = Ionicitude;
