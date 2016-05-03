@@ -121,6 +121,7 @@ function Ionicitude($q) {
 	 * Debug method that returns a list of the current Actions that you added using the addAction() method.
 	 */
 	function listLibActions() {
+		console.log(Object.getOwnPropertyNames(lib));
 		return Object.getOwnPropertyNames(lib);
 	}
 
@@ -228,19 +229,43 @@ function Ionicitude($q) {
 		return service;
 
 		/**
-		 * Checks if you defined a custom onUrlInvokeCallback in the init function's 'settings' argument.
+		 * Checks if you defined a custom onUrlInvokeCallback in the init function's 'params' argument.
 		 * @returns {boolean}
 		 */
 		function customCallback() {
-			return params && params.hasOwnProperty('customCallback') && typeof params.customCallback === 'function';
+			return params && params.hasOwnProperty('customCallback') && angular.isFunction(params.customCallback);
 		}
 
 		/**
-		 * Checks if you defined in the init function's 'settings' argument that the device checking should be done.
+		 * Checks if you defined in the init function's 'params' argument that the device checking should be done.
 		 * @returns {boolean}
 		 */
 		function doDeviceCheck() {
 			return !(params && params.hasOwnProperty('doDeviceCheck') && params.doDeviceCheck === false);
+		}
+
+		/**
+		 * Checks if you defined custom required features in the 'params' argument to check the device against.
+		 * @returns {boolean}
+		 */
+		function reqFeatures() {
+			return params && params.hasOwnProperty('reqFeatures') && angular.isArray(params.reqFeatures);
+		}
+
+		/**
+		 * Checks if you defined custom world load configuration in the 'params' argument
+		 * @returns {boolean}
+		 */
+		function worldLoadConfig() {
+			return params && params.hasOwnProperty('worldLoadConfig') && angular.isObject(params.worldLoadConfig);
+		}
+
+		/**
+		 * Checks if you defined a custom worlds directory name in the 'params' argument
+		 * @returns {boolean}
+		 */
+		function worldsRootFolder() {
+			return params && params.hasOwnProperty('worldsRootFolder') && angular.isString(params.worldsRootFolder);
 		}
 	}
 
