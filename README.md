@@ -169,7 +169,7 @@ angular.module('app', ['ionic', 'Ionicitude', /* other dependencies */]);
 ```
 
 # Initialization
-Before it can be used, the Ionicitude service needs to be initialized. You can do this by calling this method:
+Before it can be used, the Ionicitude service needs to be initialized, that is loading the Wikitude plugin and setting up some default Ionicitude behavior. You can do this by calling this method:
 
 ```javascript
 Ionicitude.init();
@@ -180,7 +180,7 @@ _Please, see [API Definition > `init()`](#init) for the complete details about t
 
 ----------
 
-**It needs to be called prior to ANY use of the module and only when the device and cordova are ready.**
+**This needs to be called prior to ANY use of the module and only when the device and cordova are ready.**
 
 I suggest that you call this function in the `app.run()` block that every Ionic app normally has, specificaly in the `$ionicPlatform.ready()` block.
 
@@ -327,7 +327,7 @@ Ionicitude.launchAR()
 	});
 ```
 
-**:warning: Note that if you try to launch an AR World on a device that didn't successfully passed the `checkDevice()` check, `Ionicitude.launchAR()` will throw an `UnsupportedFeatureError`.**
+**:warning: Note that if you try to launch an AR World on a device that didn't successfully passed the `checkDevice()` test, `Ionicitude.launchAR()` will throw an `UnsupportedFeatureError`.**
 
 # Interaction between the Ionic app and the AR View
 
@@ -337,7 +337,7 @@ It's very important to understand that when the Wikitude plugin launches an AR V
 
 ![New AR View - Diagram](docs/new-ar-view.jpg)
 
-To overcome this, the Wikitude staff added some mechanism for the two WebViews to communicate, much like a basic client/server architecture, the AR View being the client, and your app being the server.
+To overcome this, the Wikitude staff added some callback mechanism for the two WebViews to communicate, much like a basic client/server architecture, the AR View being the client, and your app being the server.
 
 ### From: AR View, To: Ionic App
 
@@ -354,10 +354,10 @@ document.location = 'architectsdk://foo?bar';
 
 This previsouly registered callback function is then responsible of analyzing, interpreting and executing whatever it's asked to do by the URL.
 
-Thankfully, Ionicitude provides you with it's own way of doing this, so you don't have to worry about it. See [Ionicitude Callback Handling Mechanism](#ionicitude-callback-handling-mechanism-chm) for the details.
+Thankfully, Ionicitude provides you with it's own callback handling mechanism, so you wouldn't have to worry about that. But you can still set up your own mechanism, if you want. Please, see [Ionicitude Callback Handling Mechanism](#ionicitude-callback-handling-mechanism-chm) for more details.
 
 ### From: Ionic App, To: AR View
-If you want your Ionic App to trigger some behavior in the AR View (in reaction to an AR View `document.location` call, for example), you can use `Ionicitude.callJavaScript()` _(mind the capital 'S')_ to do so.
+If you want your Ionic App to trigger some behavior inside the AR View (in reaction to an AR View `document.location` call, for example), you can use `Ionicitude.callJavaScript()` _(mind the capital 'S')_ to do so.
 
 ----------
 _Please, see [API Definition > `callJavaScript()`](#calljavascript) for details about this method._
@@ -367,16 +367,17 @@ _Please, see [API Definition > `callJavaScript()`](#calljavascript) for details 
 
 **For now, this method is just a wrapper around the Wikitude's `callJavaScript` function.**
 
-This method works kindda like `eval()`. You pass it a javascript statement as a String argument, and it will try to execute this statement on the context of the AR View. 
+This method works kinda like `eval()`. You pass it a javascript statement as a String argument, and it will try to execute this statement on the context of the AR View. 
 
 ```javascript
 // Somewhere in your Ionic code
 Ionicitude.callJavascript('getQuestion(42)');
 ```
 
-This will call the `getQuestion()` function, passing it `42` as it's only argument. **Note that `getQuestion()` must be defined in an AR World's JS files, not on your Ionic App's JS.**
+This will call the `getQuestion()` function, passing it `42` as it's only argument.
+**Note that `getQuestion()` must be defined in the AR World's JS, not on your Ionic App's JS.**
 
-This method is designed to be used inside a function called by the AR View using `document.location` (see above). If you try to call `Ionicitude.callJavaScript()` without having any active AR View, nothing will happen.
+This `callJavaScript()` method is designed to be called only when an AR View is currently active. If you try to call `Ionicitude.callJavaScript()` without having any active AR View, nothing will happen.
 
 
 ## Ionicitude Callback Handling Mechanism (CHM)
@@ -385,7 +386,7 @@ Ionicitude comes with it's own Callback Handling Mechanism (CHM) to deal with `d
 ```javascript
 Ionicitude.init({
 	// Using your custom CHM over Ionicitude's one.
-	customcallback: function(arViewUrl) {
+	customCallback: function(arViewUrl) {
 		// Do whatever handling you want to do with every document.location call's URL received from an AR View
 	}
 });
@@ -395,15 +396,16 @@ Ionicitude.init({
 
 ### `document.location` URL format
 
-Ionicitude's CHM requires that every URL passed as a value to `document.location` in an AR World's JS follows a particular format.
+To properly function, Ionicitude's CHM needs that every URL passed as a value to `document.location` in an AR World's JS follows a particular format.
 
-1. It needs to start with `architectsdk://`, as this is a requirement from the Wikitude plugin.
-2. The following characters must be the name of the Action that the AR View want the Ionic App to execute, or, in other words, the name of the function that will be executed by the Ionic App.
-3. If the Action needs argument(s), the name in point #2 must be followed by the `?` character.
-4. If the Action needs argument(s), the remaining characters must form a valid JSON Object declaration. Each of this object property being one of the needed arguments.
+1. The URL needs to start with `architectsdk://`, as this is a requirement from the Wikitude plugin _(you could store that somewhere in a variable to avoid rewriting it everytime)_.
+2. The following characters must be the name of the Action that the AR View want the Ionic App to execute, or, in other words, the name of the function that will be called by the Ionic App.
+3. If this function needs argument(s)...
+	1. the name of the Action in point #2 must be followed by the `?` character.
+	2. the remaining characters must form a valid JSON Object declaration. Each of this object property being one of the needed arguments.
 
 #### Valids AR View's URL
-All the following `document.location`'s URLs will be correctly interpreted and executed:
+All the following `document.location`'s URLs will be correctly interpreted and executed by the CHM:
 
 * `"architectsdk://foo"` will call the `foo` Action with no argument
 * `"architectsdk://foo?{"bar":"baz"}"` will call the `foo` Action with `{bar: "baz"}` as its argument
@@ -431,29 +433,33 @@ _Please, see [API Definition > `addAction()`](#addaction) for details about this
 This is **OK**:
 
 ```javascript
+// Give a string name and an anonymous function.
 Ionicitude.addAction('foo', function() {
-	// Give a string name and an anonymous function.
+	// Some code describing what the 'foo' Action does.
 });
 ```
 
 ```javascript
+// Declare the function and then give it to the method.
 function foo() {
-	// Declare the function and then give it to the method.
+	// Some code describing what the 'foo' Action does.
 }
 
 Ionicitude.addAction(foo);
 ```
 
 ```javascript
+// Give a named function directly to the method.
 Ionicitude.addAction(function foo() {
-	// Give a named function directly to the method.
+	// Some code describing what the 'foo' Action does.
 });
 ```
 
 This is **NOT OK**:
 ```javascript
+// Don't pass only an anonymous function.
 Ionicitude.addAction(function() {
-	// Don't pass only an anonymous function.
+	// Some code describing what the Action does.
 });
 ```
 
@@ -469,6 +475,10 @@ Ionicitude
 	.addAction(foo)
 	.addAction('bar', function() { ... })
 	.addAction(function baz() { ... });
+
+// Ionicitude's Action library now contains three Actions
+// — 'foo', 'bar' and 'baz' —
+// that can be called with a 'document.location' statement.
 ```
 
 #### Action's arguments
