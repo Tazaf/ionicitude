@@ -334,6 +334,7 @@ function Ionicitude($q) {
 	 * @return {Object}
 	 */
 	function parseActionUrl(url) {
+		url = decodeURI(url);
 		if (url.substr(0, protocol.length) === protocol) {
 			var action = {};
 			var call = url.substr(protocol.length);
