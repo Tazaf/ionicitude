@@ -165,7 +165,7 @@ Whatever installing method you choose, you'll finally have to register the modul
 
 ```javascript
 // In app.js or wherever you created your app's module
-angular.module('app', ['ionic', 'Ionicitude', /* other dependencies */]);
+angular.module('app', ['ionic', 'IonicitudeModule', /* other dependencies */]);
 ```
 
 # Initialization
