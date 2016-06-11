@@ -144,7 +144,7 @@ Or, if you want the humanly readable version :
 ```
 
 ## 1b. Manually
-You can simply download this project on your computer and place it wherever you like in your project. Then, locate either the `ionicitude.min.js` file **or** the `ionicitude.js` file, both being in the `dist` folder of the downloaded project, and copy them in your own project, wherever you like.
+You can simply [download the last version of this project](https://github.com/Tazaf/ionicitude/releases) on your computer and place it wherever you like in your project. Then, locate either the `ionicitude.min.js` file **or** the `ionicitude.js` file, both being in the `dist` folder of the downloaded project, and copy them in your own project, wherever you like.
 
 You will then need to include the file in your app's `index.html`, after the calls to `ionic.bundle.js` and `cordova.js` :
 
