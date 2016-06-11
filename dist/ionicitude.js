@@ -55,6 +55,7 @@ function Ionicitude($q) {
 		addAction: addAction,
 		listLibActions: listLibActions,
 		captureScreen: captureScreen,
+		ready: ready,
 		// Wikitude API wrapper. Will be set by init()
 		close: null,
 		hide: null,
@@ -72,6 +73,7 @@ function Ionicitude($q) {
 	/**
 	 * Defines the value of the url protocol used by Wikitude to call the app from within the AR View.
 	 * This value MUST NOT be altered in any way since it's an internal Wikitude mechanism.
+	 * @type {String}
 	 */
 	var protocol = 'architectsdk://';
 
@@ -82,8 +84,15 @@ function Ionicitude($q) {
 
 	/**
 	 * This is where all the custom Actions that can be called from within an AR View will be stored at runtime, using the addAction() method.
+	 * @type {Object}
 	 */
 	var lib = {};
+
+	/**
+	 * This is where any request made with the ready() function while Ionicitude is not fully initialized will be stored, waiting to be executed.
+	 * @type {Array}
+	 */
+	var requestsQueue = [];
 
 	/**
 	 * Defines the default settings of the Wikitude service.
@@ -116,6 +125,19 @@ function Ionicitude($q) {
 	return service;
 
 	//////////////////// PUBLIC SERVICE METHODS ////////////////////
+
+	/**
+	 * Should be used when wanting to call any sensitive Ionicitude's method - like launchAR() - while not being sure if the plugin will be fully initialized
+	 * by the time its method is called.
+	 * Since Ionicitude.init() is asynchronous when performing the device check, your AR World could be launch before the initialization process is fully resolved,
+	 * causing an UnsupportedFeatureError to be falsly raised.
+	 * The parameter must be a function that should encapsulate the code you want to execute. Much like $ionicPlatform.ready() function.
+	 * @param {Function} request An anonymous function encapsulating the code to execute when Ionicitude's plugin is completely initialized.
+	 */
+	function ready(request) {
+		if (initialized && angular.isFunction(request)) request();
+		else requestsQueue.push(request);
+	}
 
 	/**
 	 * Debug method that returns a list of the current Actions that you added using the addAction() method.
@@ -154,12 +176,12 @@ function Ionicitude($q) {
 	 * @throws SyntaxError
 	 */
 	function addAction(nameOrFunction, callback) {
-		if (typeof nameOrFunction === 'string' || nameOrFunction instanceof String) {
+		if (angular.isString(nameOrFunction)) {
 			if (!callback) throw new TypeError('Ionicitude - addAction() expects a second argument if first argument is of type \'string\'.');
 			if (typeof callback !== 'function') throw new TypeError('Ionicitude - addAction() expects second argument to only be of type \'function\', \'' + typeof callback + '\' given.');
 			checkUsedName(nameOrFunction);
 			lib[nameOrFunction] = callback;
-		} else if (typeof nameOrFunction === 'function' || nameOrFunction instanceof Function) {
+		} else if (angular.isFunction(nameOrFunction)) {
 			var name = nameOrFunction.name;
 			if (!name) throw new TypeError('Ionicitude - addAction() do not accept anonymous function as first argument. Please, try passing a named function instead.');
 			checkUsedName(name);
@@ -200,7 +222,7 @@ function Ionicitude($q) {
 	}
 
 	/**
-	 * Initializes the Ionicitude service, then returns it, for you to chain methods calls, if necessary.
+	 * Initializes the Ionicitude service, then returns a promise. If resolved, this promise returns the service.
 	 * You can pass an object argument to this method to change it's default behavior or change some of Ionicitude's default settings.
 	 * This object can have the following properties :
 	 * - customCallback: A function that you want to set as your app's Custom Handling Mechanism (CHM). If not provided, the Ionicitude's CHM will be used.
@@ -209,24 +231,57 @@ function Ionicitude($q) {
 	 * - worldLoadConfig: An object of additionnals world load settings.
 	 * - worldsRootFolder: A string that references your app's folder in which your AR Worlds' folders are stored.
 	 * @param params An object to alter the init behavior or change default settings.
-	 * @returns {Object} The Ionicitude service.
+	 * @returns {Promise} A promise of the initialization.
 	 */
 	function init(params) {
-		console.log(params);
-		if (!initialized) {
-			console.log('init service starting');
-			initialized = true;
-			loadPlugin();
-			setWrappers();
+		return $q(function (resolve, reject) {
+			if (!initialized) {
+				console.log('init service starting');
+				loadPlugin()
+					.then(setWrappers)
+					.then(setCallback)
+					.then(function () {
+						if (doDeviceCheck()) {
+							return checkDevice();
+						} else {
+							return console.log('check skipped due to init settings');
+						}
+					})
+					.then(handleSettings)
+					.then(function () {
+						initialized = true;
+					})
+					.then(handleQueue)
+					.then(function() {
+						console.log('end of initialization');
+						resolve(service);
+					})
+					.catch(function (error) {
+						reject(error)
+					});
+			} else {
+				reject('Ionicitude has already been initialized !')
+			}
+		});
+
+		/**
+		 * Sets the callback for any document.location request from the AR.
+		 * If you provide a value for the customCallback param, it will be set here.
+		 */
+		function setCallback() {
 			var callback = executeActionCall;
 			if (customCallback()) callback = params.customCallback;
 			plugin.setOnUrlInvokeCallback(callback);
-			doDeviceCheck() && checkDevice() || console.log('check skipped due to init settings');
+		}
+
+		/**
+		 * Sets any of the parameter to the value that you provided in the param object, if any.
+		 */
+		function handleSettings() {
 			if (reqFeatures()) settings.reqFeatures = params.reqFeatures;
 			if (worldLoadConfig()) settings.worldLoadConfig = params.worldLoadConfig;
 			if (worldsRootFolder()) settings.worldsRootFolder = params.worldsRootFolder;
 		}
-		return service;
 
 		/**
 		 * Checks if you defined a custom onUrlInvokeCallback in the init function's 'params' argument.
@@ -295,17 +350,20 @@ function Ionicitude($q) {
 	//////////////////// PRIVATE SERVICE METHODS ////////////////////
 
 	/**
+	 * Executes any request in the requestQueue, in the order they were stored, then reset the requestQueue
+	 */
+	function handleQueue() {
+		requestsQueue.forEach(function(request) {
+			angular.isFunction(request) && request();
+		});
+		requestsQueue = [];
+	}
+
+	/**
 	 * Returns the correct path to the HTML file that should be loaded by the launching AR World, based on the given 'world_ref'.
 	 * @param world_ref
 	 */
 	function getWorldUrl(world_ref) {
-		//if (!settings.worldsFolders.hasOwnProperty(world_ref)) {
-		//	throw new SyntaxError('Ionicitude Module : launchAR() : The argument\'s value (\'' + world_ref + '\')passed in launchAR doesn\'t match any property of the worldsFolders setting.');
-		//}
-		//var root = 'www/' + settings.worldsRootFolder;
-		//var folder = settings.worldsFolders[world_ref].folder ? settings.worldsFolders[world_ref].folder : world_ref;
-		//var file = (settings.worldsFolders[world_ref].file ? settings.worldsFolders[world_ref].file : 'index') + '.html';
-		//return root + '/' + folder + '/' + file;
 		return 'www/' + settings.worldsRootFolder + '/' + world_ref + '/index.html';
 	}
 
@@ -365,11 +423,18 @@ function Ionicitude($q) {
 	 * Loads the Wikitude plugin in the private 'plugin' variable.
 	 */
 	function loadPlugin() {
-		if (!plugin) {
-			plugin = cordova.require('com.wikitude.phonegap.WikitudePlugin.WikitudePlugin');
-		}
+		return $q(function (resolve, reject) {
+			if (!plugin) {
+				plugin = cordova.require('com.wikitude.phonegap.WikitudePlugin.WikitudePlugin');
+				resolve('Plugin is loaded.');
+			} else
+				reject('Plugin already loaded !');
+		})
 	}
 
+	/**
+	 * Sets Ionicitude's wrapper methods with the one from the Wikitude Plugin.
+	 */
 	function setWrappers() {
 		service.close = plugin.close;
 		service.hide = plugin.hide;
