@@ -27,6 +27,7 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
   - [2. Registering the dependency](#2-registering-the-dependency)
 - [Initialization](#initialization)
 - [Checking Device's Features](#checking-devices-features)
+- [Execute code only when ready](#execute-code-only-when-ready)
 - [Launching an AR World](#launching-an-ar-world)
   - [What's an AR World](#whats-an-ar-world)
   - [Expected files organization](#expected-files-organization)
@@ -47,6 +48,7 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
   - [`hide()`](#hide)
   - [`init()`](#init)
   - [`launchAR()`](#launchar)
+  - [`ready()`](#ready)
   - [`show()`](#show)
   - [`setLocation()`](#setlocation)
 
@@ -169,7 +171,7 @@ angular.module('app', ['ionic', 'IonicitudeModule', /* other dependencies */]);
 ```
 
 # Initialization
-Before it can be used, the Ionicitude service needs to be initialized, that is loading the Wikitude plugin and setting up some default Ionicitude behavior. You can do this by calling this method:
+Before it can be used, the Ionicitude service needs to be initialized. This means loading the Wikitude plugin and setting up some default Ionicitude behavior. You can do this by calling this method:
 
 ```javascript
 Ionicitude.init();
@@ -180,7 +182,7 @@ _Please, see [API Definition > `init()`](#init) for the complete details about t
 
 ----------
 
-**This needs to be called prior to ANY use of the module and only when the device and cordova are ready.**
+:information_source: **This method should be executed before using the module, and only when the device and cordova are ready.**
 
 I suggest that you call this function in the `app.run()` block that every Ionic app normally has, specificaly in the `$ionicPlatform.ready()` block.
 
@@ -198,6 +200,8 @@ function run($ionicPlatform, Ionicitude) {
   });
 }
 ```
+`Ionicitude.init()` is a promise that returns the Ionicitude service as the resolved value. If anything goes wrong while initializing, the error is passed as the rejected value.
+
 # Checking Device's Features
 
 We already saw that an AR World can be geo-based or image-recognition-based, or both. The device that wants to launch such AR World must support whatever features it requires, and the Wikitude plugin must know wether or not the device supports said features.
@@ -259,6 +263,39 @@ Ionicitude.checkDevice()
   });
 ```
 
+# Execute code only when ready
+
+Please note that `Ionicitude.init()` has some asynchronous behavior (especially while checking the device). This means that some of your code using Ionicitude could be executed before the initialization process is finished, resulting in potential error (see [issue #3](https://github.com/Tazaf/ionicitude/issues/3)).
+
+To ensure that the code using the module is executed only when Ionicitude has done initializing, you can use this method:
+
+```javascript
+Ionicitude.ready();
+```
+
+----------
+_Please, see [API Definition > `ready()`](#ready) for the complete details about this method._
+
+----------
+
+The syntax is exactly like the `$ionicPlatform.ready()` function, provided by Ionic. You encapsulate the code you want to execute inside an anonymous function, passed as the argument to the `Ionicitude.ready()` method. Say you want to launch an AR World (more on that [on the next point](#launching-an-ar-world)), you would write something like this:
+
+```javascript
+// This could be in a controller for example.
+Ionicitude.ready(function () {
+	Ionicitude
+		.launchAR('myAR')
+		.then(function (success) {
+			// ...
+		}
+		.catch(function (error) }
+			// ...
+		}
+});
+```
+This will ensure that the launch is done **only** when Ionicitude's initialization is fully completed.
+
+**Some Ionicitude's method can be safely called even if the module is not initialized, so using the `ready()` method is not mandatory for every use case. Nonetheless, it's a good practice to always encapsulate any call the module inside this method, to be extra sure.**
 
 # Launching an AR World
 
@@ -709,6 +746,27 @@ Ionicitude.launchAR("my_world_folder_name")
 	.catch(function(error) {
 		// React to a failed AR World launching
 	});
+```
+
+## `ready()`
+Encapsulate your code that is using the Ionicitude service in this method. That will ensure that this code is executed only when or if the module has finished initializing.
+
+#### Argument
+Name|Type|Description
+----|----|-----------
+code|`FUNCTION`|An anonymous function that contains the code to execute only when Ionicitude is fully initialized.
+
+#### Usage
+```javascript
+Ionicitude.ready(function () {
+	Ionicitude.launchAR("myAR")
+		.then(function(success) {
+			// ...
+		})
+		.catch(function(error) {
+			// ...
+		});
+});
 ```
 
 ## `show()`
