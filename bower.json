@@ -37,7 +37,8 @@
     "LICENSE",
     "logo.png",
     "package.json",
-    "README.md"
+    "README.md",
+    "docs"
   ],
   "repository": {
     "type": "git",
