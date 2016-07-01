@@ -108,11 +108,11 @@ Hey, no prob'. You can check your installed android platform version with...
 
 ### How to check it worked
 
-When it's done, you can check that everything's OK by typing this commande (and crossing your fingers):
+When it's done, you can check that everything's OK by typing this command (and crossing your fingers):
 
 `ionic build android`
 
-If you see a releaving `BUILD SUCCESSFULL` at the end of the process, congrats! Your app is building.
+If you see an easing `BUILD SUCCESSFULL` at the end of the process, congrats! Your app is building.
 
 ## Known Android bugs
 
@@ -129,7 +129,9 @@ Using any command ligne tool, go to your app's root directory and type:
 
 `ionic add tazaf/ionicitude`
 
-_Note : this is just syntactic sugar for `bower install`_
+or
+
+`bower install --save-dev tazaf/ionicitude`
 
 After some download, Ionicitude will be installed on your project. **The files will be locate in `www/lib/ionicitude`.**
 
@@ -385,7 +387,7 @@ Remember when I said earlier that an AR World is ultimately juste HTML/CSS/JS fi
 document.location = 'architectsdk://foo?bar';
 ```
 
-... that's the signal for the AR View that it needs to call a previsouly registered callback function on the Ionic App, and pass it the URL _(the value of `document.location`)_ as a String argument.
+... that's the signal for the AR View that it needs to call a previsouly registered callback function on the Ionic App (more on that [later](#ionicitude-callback-handling-mechanism-chm)), and pass it the URL _(the value of `document.location`)_ as a String argument.
 
 ![Callback Function](docs/callback-function.jpg)
 
@@ -547,8 +549,8 @@ Then, your `param` argument's value will translate to...
 // Somwhere in your Ionic App's JS, but after calling Ionicitude.init()
 Ionicitude.addAction(function foo(service, param) {
 	// You can access your param properties
-	console.log(param.bar); // Will print : "Some argument value"
-	console.log(param.baz); // Will print : 125.252
+	console.log(param.bar); // Will print : "Some argument value", in the console of the Ionic WebView
+	console.log(param.baz); // Will print : 125.252, in the console of the Ionic WebView
 	
 	// You can also access the Ionicitude service API
 	service.close(); // Or any other API's function
