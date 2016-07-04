@@ -51,6 +51,8 @@ AngularJS module for using the Wikitude cordova plugin in an Ionic project.
   - [`ready()`](#ready)
   - [`show()`](#show)
   - [`setLocation()`](#setlocation)
+- [Demo Application](#demo-application)
+- [Contribution and Issues](#contribution-and-issues)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -800,6 +802,18 @@ accuracy|`NUMBER`|The accuracy (in meters) of the location's data.
 ```javascript
 Ionicitude.setLocation(31.2543139, -24.258480555555554, -10000, 20000):
 ```
+
+# Demo Application
+An demo application that uses Ionicitude in an Ionic app can be found [here](https://github.com/Tazaf/IonicitudeDemoApp).
+
+# Contribution and Issues
+
+Any contribution or enhancement to this Ionicitude Demo App are welcomed and will be appreciated.
+
+If you experience bugs or strange behaviors will testing this app, please do not hesitate to raise an issue about it.
+
+**In both case, please, use the GitHub tools of this repository (merge request and issues) rather than sending a personnal email. This way, it will be easier to manage and keep track of what's happening. Thanks !**
+
 # License
 This package is licensed under the MIT Licence. See [LICENCE.txt](https://github.com/Tazaf/ionicitude/blob/master/LICENSE.txt) or read the following text:
 ```
