@@ -5,6 +5,7 @@
 ```
 AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 ```
+This bower package is designed for Ionic developers that wants to use the [cordova Wikitude plugin](http://www.wikitude.com/products/extensions/cordova-plugin-augmented-reality/) to add Augmented Reality (AR) in their app. It provides an Angular Service, named **Ionicitude**, with a simple API to interact with the cordova plugin, wether it be setting it, launching it or handling the AR Views' requests (more about that later).
 
 # Disclaimer
 **Please note that this project is not developped in association with or related to neither the Ionic team nor the Wikitude team.**
