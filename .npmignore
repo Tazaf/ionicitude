@@ -1,0 +1,8 @@
+docs/
+src/
+tests/
+.bowerrc
+.gitignore
+bower.json
+gulpfile.js
+package.json.back
