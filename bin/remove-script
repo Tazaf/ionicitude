@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-console.log(process.cwd());
 console.log("Removing Ionicitude from your project's lib folder...");
 console.log('');
 var rmdir = require('rmdir');
