@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+console.log("Installing Ionicitude in your project's lib folder...");
+console.log('');
+var copy = require('copy');
+var src = './node_modules/ionicitude/dist/';
+var dest = './www/lib/ionicitude/dist';
+var opt = {
+  flatten: true
+};
+
+copy(src + '*', dest, opt, function(err) {
+  if (err) throw err;
+});
+console.log('Ionicitude has been correctly installed on your project! Thank you for using it ;)');

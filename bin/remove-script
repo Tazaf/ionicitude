@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+console.log("Removing Ionicitude from your project's lib folder...");
+console.log('');
+var rmdir = require('rmdir');
+var path = 'www/lib/ionicitude';
+
+rmdir(path, function(err, dirs, files) {
+  if (err && err.errno == -4058) {
+    console.log("!ERROR - Ionicitude has not been installed. Try using the 'install-ionicitude' script first.");
+  } else {
+    console.log("Ionicitude has been correctly removed from your poject. See you again ;)");
+    console.log('');
+    console.log("Folders removed from your project:");
+    for (var i = 0; i < dirs.length; i++) {
+      console.log(' - ' + dirs[i]);
+    }
+    console.log('');
+    console.log("Files removed from your poject:");
+    for (var i = 0; i < files.length; i++) {
+      console.log(' - ' + files[i]);
+    }
+  }
+});

@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "AngularJS module for using the Wikitude cordova plugin in an Ionic project.",
   "main": "./dist/ionicitude.min.js",
+  "bin": {
+    "install-ionicitude": "./bin/install-script",
+    "remove-ionicitude": "./bin/remove-script"
+  },
   "directories": {
     "doc": "docs",
     "test": "tests",
@@ -26,7 +30,7 @@
     "Wikitude",
     "ar",
     "augmented",
-    "re�ality",
+    "reality",
     "plugin",
     "cordova",
     "Cordova"
@@ -38,6 +42,8 @@
   },
   "homepage": "https://github.com/Tazaf/ionicitude#readme",
   "dependencies": {
-    "angular": "1.4.x"
+    "angular": "1.4.x",
+    "copy": "^0.3.0",
+    "rmdir": "^1.2.0"
   }
 }
