@@ -20,7 +20,6 @@ var files = [
 ];
 
 var prodFolder = './dist';
-var devFolder = 'C:/Projets/BioSentiers/www/lib/ionicitude/dist';
 
 /**
  * Builds a dist version of the module.
@@ -55,8 +54,4 @@ function compileTo(dest) {
 
 gulp.task('default', function () {
 	return compileTo(prodFolder);
-});
-
-gulp.task('dev', function () {
-	return compileTo(devFolder);
 });
