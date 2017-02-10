@@ -3,7 +3,7 @@
  * This is the service that you will inject into your controllers in order to use the Wikitude cordova plugin functions and the service functions.
  */
 angular
-	.module('IonicitudeModule')
+	.module('ionicitude-module')
 	.factory('Ionicitude', Ionicitude);
 
 /* @ngInject */

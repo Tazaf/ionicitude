@@ -31,14 +31,14 @@ UnsupportedFeatureError.prototype = Object.create(Error.prototype, {
 /**
  * Defines the WikitudeModule for subsequent uses in AngularJS
  */
-angular.module('IonicitudeModule', []);
+angular.module('ionicitude-module', []);
 
 /**
  * Defines the main service of Ionicitude.
  * This is the service that you will inject into your controllers in order to use the Wikitude cordova plugin functions and the service functions.
  */
 angular
-	.module('IonicitudeModule')
+	.module('ionicitude-module')
 	.factory('Ionicitude', Ionicitude);
 
 /* @ngInject */
