@@ -27,7 +27,7 @@
     "Cordova"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/Tazaf/ionicitude/wiki",
   "ignore": [
     "node_modules",
     "src",
