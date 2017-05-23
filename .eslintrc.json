@@ -1,0 +1,12 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 5,
+    "sourceType": "script"
+  },
+  "globals": {
+    "angular": true
+  },
+  "rules": {
+    "quote": [1, "single"]
+  }
+}
