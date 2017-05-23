@@ -2,6 +2,8 @@
 
 # Ionicitude
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/198f375b3d344a8bbdb3ebe17c24eb6f)](https://www.codacy.com/app/MediaComem/ionicitude?utm_source=github.com&utm_medium=referral&utm_content=Tazaf/ionicitude&utm_campaign=badger)
+
 ```
 AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 ```
