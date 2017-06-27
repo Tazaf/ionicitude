@@ -36,22 +36,21 @@ var prodFolder = './dist';
  * - Renames the file with '.min.js'
  * - Saves the file in the destination folder
  */
-
-function compileTo(dest) {
-	return gulp.src(files)
+gulp.task('build', function () {
+	gulp.src(files)
 		.pipe(concat('concat-src'))
 		.pipe(header(start))
 		.pipe(footer(end))
 		.pipe(addsrc.prepend('./src/UnsupportedFeatureError.js'))
 		.pipe(concat('concat-all'))
 		.pipe(rename({basename: distName, extname: '.js'}))
-		.pipe(gulp.dest(dest))
+		.pipe(gulp.dest(prodFolder))
 		.pipe(ngAnnotate())
 		.pipe(uglify())
 		.pipe(rename({extname: '.min.js'}))
-		.pipe(gulp.dest(dest));
-}
-
-gulp.task('default', function () {
-	return compileTo(prodFolder);
+		.pipe(gulp.dest(prodFolder));
 });
+
+gulp.task('default', function() {
+	gulp.watch('./src/*.js', ['build']);
+})
