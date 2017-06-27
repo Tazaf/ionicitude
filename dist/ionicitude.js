@@ -48,21 +48,30 @@ function Ionicitude($q, $log) {
 	 * @type {Object}
 	 */
 	var service = {
+		// Properties
+		deviceSupportsFeatures: false,
+		// Methods
 		checkDevice: checkDeviceFn,
 		requestAccess: requestAccessFn,
-		deviceSupportsFeatures: false,
+		getSDKBuildInformation: getSDKBuildInformationFn,
+		getSDKVersion: getSDKVersionFn,
 		init: initFn,
 		launchAR: launchArFn,
 		addAction: addActionFn,
 		listLibActions: listLibActionsFn,
 		captureScreen: captureScreenFn,
 		ready: readyFn,
-		// Wikitude API wrapper. Will be set by init()
+		// Wikitude Core API wrapper. Will be set by init()
 		close: null,
 		hide: null,
 		show: null,
 		callJavaScript: null,
-		setLocation: null
+		setLocation: null,
+		setErrorHandler: null,
+		setDeviceSensorsNeedCalibrationHandler: null,
+		setDeviceSensorsFinishedCalibrationHandler: null,
+		setBackButtonCallback: null,
+		openAppSettings: null
 	};
 
 	/**
@@ -126,6 +135,34 @@ function Ionicitude($q, $log) {
 	return service;
 
 	//////////////////// PUBLIC SERVICE METHODS ////////////////////
+
+	/**
+	 * Gets the current SDK build information, as an object.
+	 * This is an asynchronous function that returns a promise, containing the current SDK build information.
+	 * Note that the promise will never be rejected.
+	 * @return {Promise} A Promise of an object.
+	 */
+	function getSDKBuildInformationFn() {
+		return $q(function (resolve) {
+			plugin.getSDKBuildInformation(function success(data) {
+				resolve(data);
+			});
+		});
+	}
+
+	/**
+	 * Gets the Wikitude SDK current version.
+	 * This is an asynchronous function that returns a promise, containing the current SDK Version.
+	 * Note that the promise will never be rejected.
+	 * @return {Promise} A Promise of an SDK Version.
+	 */
+	function getSDKVersionFn() {
+		return $q(function (resolve) {
+			plugin.getSDKVersion(function success(data) {
+				resolve(data);
+			});
+		});
+	}
 
 	/**
 	 * This function can be used at anytime to ask the user for access permission.
@@ -467,6 +504,11 @@ function Ionicitude($q, $log) {
 		service.show = plugin.show;
 		service.callJavaScript = plugin.callJavaScript;
 		service.setLocation = plugin.setLocation;
+		service.setErrorHandler = plugin.setErrorHandler;
+		service.setDeviceSensorsNeedCalibrationHandler = plugin.setDeviceSensorsNeedCalibrationHandler;
+		service.setDeviceSensorsFinishedCalibrationHandler = plugin.setDeviceSensorsFinishedCalibrationHandler;
+		service.setBackButtonCallback = plugin.setBackButtonCallback;
+		service.openAppSettings = plugin.openAppSettings;
 	}
 }
 })();
