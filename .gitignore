@@ -1,6 +1,7 @@
 .DS_Store*
 node_modules/
 _site/
+vendor/
 
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
