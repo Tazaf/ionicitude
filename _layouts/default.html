@@ -18,9 +18,9 @@
 
   <body>
     <header>
-      <div class="inner">
+      <div class="inner banner">
         <a href="{{ '/' | absolute_url }}">
-          <h1><img src="{{ '/img/logo_min.png' | absolute_url }}" alt="Ionicitude Logo">{{ site.title | default: site.github.repository_name }}</h1>
+          <h1><img src="{{ '/img/logo_min.png' | absolute_url }}" alt="Ionicitude Logo" id="logo">{{ site.title | default: site.github.repository_name }}</h1>
         </a>
         <h2>{{ site.description | default: site.github.project_tagline }}</h2>
         <a href="{{ site.project.repository_url }}" class="button"><small>View project on</small> GitHub</a>

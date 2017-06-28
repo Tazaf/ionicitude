@@ -2,3 +2,7 @@
 ---
 
 @import "{{ site.theme }}";
+
+#logo {
+  margin-right: 30px;
+}
