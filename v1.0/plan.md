@@ -1,10 +1,9 @@
 ---
 sidebar: false
+layout: default
 ---
 
 # Getting started
-1. [Introduction](https://github.com/Tazaf/ionicitude/wiki)
-
 1. [Installing the Wikitude plugin](https://github.com/Tazaf/ionicitude/wiki/Installing-the-Wikitude-plugin)
 
 1. [Installing Ionicitude](https://github.com/Tazaf/ionicitude/wiki/Installing-Ionicitude)

@@ -9,6 +9,7 @@ gems:
 defaults:
   -
     scope:
-      path: v1.0.x.x
+      path: v1.0
     values:
-      layout: v1.0.x.x
+      layout: v1.0
+      version: 1.0.x

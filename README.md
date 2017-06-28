@@ -13,6 +13,6 @@ _Since I'm lazy, I'll use **AR World** throughout the rest of this documentation
 :warning: **The cordova Wikitude plugin relies heavily on the device's hardware and software (camera, accelerometer, compass, etc). Thus, _you won't be able to test your app (at least the AR part of it) anywhere except on a real device_. Testing it in a browser or an emulator will fail.**
 
 ## Versions
-- [v1.0.x](/v1.0.x/plan.html)
-- [v1.1.x](/v1.1.x/plan.html)
-- [v2.0.x](/v2.0.x/plan.html)
+- [v1.0.x](/v1.0/Installing-the-Wikitude-plugin)
+- [v1.1.x](/v1.1/Installing-the-Wikitude-plugin)
+- [v2.0.x](/v2.0/Installing-the-Wikitude-plugin)
