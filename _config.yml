@@ -6,3 +6,9 @@ project:
   repository_name: ionicitude
 gems:
   - jemoji
+defaults:
+  -
+    scope:
+      path: v1.0.x.x
+    values:
+      layout: v1.0.x.x
