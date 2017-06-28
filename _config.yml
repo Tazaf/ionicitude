@@ -4,3 +4,5 @@ description: AngularJS module for using the Wikitude cordova plugin in an Ionic 
 project:
   repository_url: https://github.com/Tazaf/ionicitude
   repository_name: ionicitude
+gems:
+  - jemoji
