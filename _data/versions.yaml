@@ -1,8 +1,5 @@
 title: Docs
-list: 
+list:
   - title: v1.0.x
     url: v1.0/plan
-  - title: v1.1.x
-    url: v1.1/plan
-  - title: v2.0.x
-    url: v2.0/plan
+latest: v1.1

@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
-    "js-yaml": "^3.8.4"
+    "js-yaml": "^3.8.4",
+    "ncp": "^2.0.0",
+    "scripty": "^1.7.1"
   },
-  "bin": {
-    "new-version": "./bin/new-version"
+  "scripts": {
+    "new-version": "node ./scripts/new-version"
   }
 }

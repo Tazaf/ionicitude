@@ -1,0 +1,91 @@
+#!/usr/bin/env node
+
+const fs = require('fs')
+const yaml = require('js-yaml')
+const updated = process.argv[2]
+const path = require('path')
+const ncp = require('ncp')
+
+function badArg(arg) {
+  return arg !== 'minor' && arg !== 'major'
+}
+
+// Checking that we received proper argument
+if (badArg(updated)) throw new SyntaxError(`The new-version script expects one argument whose value is either 'minor' or 'major'. '${updated}' received.`)
+
+try {
+  const versionsPath = path.join(__dirname, '../_data/versions.yaml')
+  const configPath = path.join(__dirname, '../_config.yaml')
+
+  // Retrieving the versions.yaml file
+  const versions = yaml.safeLoad(fs.readFileSync(versionsPath, 'utf8'))
+  const config = yaml.safeLoad(fs.readFileSync(configPath, 'utf8'))
+  const newVer = {}
+
+  console.log(`Creating a new ${updated} documentation version...`)
+  console.log('')
+  console.log(`latest version: ${versions.latest}`)
+
+  // Retrieving the latest documentation version
+  const vPos = versions.latest.indexOf('v') + 1
+  const dotPos = versions.latest.indexOf('.')
+  newVer.minor = versions.latest.substr(dotPos + 1)
+  newVer.major = versions.latest.substr(vPos, dotPos - 1)
+
+  // Updating the version based on the param
+  updated == 'minor' && newVer.minor++
+  updated == 'major' && newVer.major++
+  newVer.full = `v${newVer.major}.${newVer.minor}`
+
+  console.log(`new version: ${newVer.full}`)
+  console.log('')
+
+  const sourcePath = path.join(__dirname, '..', versions.latest)
+  const destPath = path.join(__dirname, '..', newVer.full)
+
+  console.log(`Creating a new ${destPath} folder, based on the ${sourcePath} folder...`)
+
+  // Copying the latest documentation folder with the new numVer
+  ncp(sourcePath, destPath, err => {
+    if (err) throw err
+
+    console.log('Done!')
+    console.log('')
+
+    // Setting the new version as the latest version
+    versions.latest = newVer.full
+
+    console.log(`Adding the new version's data to the versions.yaml file...`)
+
+    // Adding the new version's data to the versions object
+    versions.list.push({
+      title: `${newVer.full}.x`,
+      url: `${newVer.full}/plan`
+    })
+
+    fs.writeFileSync(versionsPath, yaml.safeDump(versions))
+
+    console.log('Done!')
+    console.log('')
+    console.log(`Adding the new version's data to the _config.yaml file...`)
+
+    // Adding the new version's data to the config object
+    config.defaults.push({
+      scope: {
+        path: newVer.full,
+      },
+      values: {
+        version: `${newVer.major}.${newVer.minor}.x`
+      }
+    })
+
+    fs.writeFileSync(configPath, yaml.safeDump(config))
+
+    console.log('Done!')
+    console.log('')
+    console.log('All done!')
+    console.warn(`WANR: If you're using jekyll serve, don't forget to restart it since _config.yaml has been updated.`)
+  })
+} catch (e) {
+  console.log(e);
+}
