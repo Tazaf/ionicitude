@@ -26,7 +26,9 @@ main {
 aside {
   flex: 0 0 250px;
   font-size: 0.9em;
-  margin-right: 4em;
+  margin-right: 2em;
+  padding-right: 2em;
+  border-right: solid 1px #eff0f1;
 }
 #toc {
   hr, p { display: none; }
