@@ -7,7 +7,7 @@ Ionicitude.init();
 ```
 
 ----------
-_Please, see [API Definition > `init()`](https://github.com/Tazaf/ionicitude/wiki/API-Definition#init) for the complete details about this method, or continue reading to see some of them in their context._
+_Please, see [API Doc > `init()`](init()) for the complete details about this method, or continue reading to see some of them in their context._
 
 ----------
 

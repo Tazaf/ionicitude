@@ -13,5 +13,5 @@ js|`STRING`|A litteral javascript statement to execute in the context of the cur
 ## Usage
 ```javascript
 // Will prompt an alert in the AR View
-Ionicitude.callJavaScript('alert(\'Hello\')');
+Ionicitude.callJavaScript('alert("Hello")');
 ```

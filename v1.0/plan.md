@@ -14,7 +14,7 @@ toc: false
 1. [Interaction between the Ionic app and the AR View](Interaction-between-the-Ionic-app-and-the-AR-View)
 1. [Ionicitude Callback Handling Mechanism (CHM)](Ionicitude-Callback-Handling-Mechanism-(CHM))
 
-# API Documentation
+# API Doc
 * [`addAction()`](addAction())
 * [`callJavaScript()`](callJavaScript())
 * [`captureScreen()`](captureScreen())

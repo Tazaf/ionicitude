@@ -9,7 +9,7 @@ Ionicitude.checkDevice();
 ```
 
 ----------
-_Please, see [API Definition > `checkDevice()`](https://github.com/Tazaf/ionicitude/wiki/API-Definition#checkdevice) for the complete details about this method, or continue reading to see some of them in their context._
+_Please, see [API Doc > `checkDevice()`](checkDevice()) for the complete details about this method, or continue reading to see some of them in their context._
 
 ----------
 

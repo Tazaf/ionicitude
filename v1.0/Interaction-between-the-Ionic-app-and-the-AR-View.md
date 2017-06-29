@@ -29,7 +29,7 @@ Thankfully, Ionicitude provides you with it's own callback handling mechanism, s
 If you want your Ionic App to trigger some behavior inside the AR View (in reaction to an AR View `document.location` call, for example), you can use `Ionicitude.callJavaScript()` _(mind the capital 'S')_ to do so.
 
 ----------
-_Please, see [API Definition > `callJavaScript()`](https://github.com/Tazaf/ionicitude/wiki/API-Definition#calljavascript) for details about this method._
+_Please, see [API Doc > `callJavaScript()`](https://github.com/Tazaf/ionicitude/wiki/API-Doc#calljavascript) for details about this method._
 
 ----------
 

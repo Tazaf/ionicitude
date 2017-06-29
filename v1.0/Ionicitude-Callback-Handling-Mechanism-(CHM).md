@@ -49,7 +49,7 @@ You'll have to manually register an Action to Ionicitude's library before callin
 Do this by calling `Ionicitude.addAction()` and passing it either a **name** and an **anonymous** function as a callback, or just a **named** function. **Anything else will throw a TypeError.**
 
 ----------
-_Please, see [API Definition > `addAction()`](addAction()) for details about this method._
+_Please, see [API Doc > `addAction()`](addAction()) for details about this method._
 
 ----------
 

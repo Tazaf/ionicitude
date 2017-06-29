@@ -9,11 +9,11 @@ Ionicitude.ready();
 ```
 
 ----------
-_Please, see [API Definition > `ready()`](https://github.com/Tazaf/ionicitude/wiki/API-Definition#ready) for the complete details about this method._
+_Please, see [API Doc > `ready()`](ready()) for the complete details about this method._
 
 ----------
 
-The syntax is exactly like the `$ionicPlatform.ready()` function, provided by Ionic. You encapsulate the code you want to execute inside an anonymous function, passed as the argument to the `Ionicitude.ready()` method. Say you want to launch an AR World (more on that [on the next point](https://github.com/Tazaf/ionicitude/wiki/Launching-an-AR-World)), you would write something like this:
+The syntax is exactly like the `$ionicPlatform.ready()` function, provided by Ionic. You encapsulate the code you want to execute inside an anonymous function, passed as the argument to the `Ionicitude.ready()` method. Say you want to launch an AR World (see [API Doc > `launchAR()`](launchAR()) for details), you would write something like this:
 
 ```javascript
 // This could be in a controller for example.

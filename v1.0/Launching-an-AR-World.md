@@ -47,7 +47,7 @@ Ionicitude.launchAR('world-foo');
 ```
 
 ----------
-_Please, see [API Definition > `launchAR()`](https://github.com/Tazaf/ionicitude/wiki/API-Definition#launchar) for the complete details about this method._
+_Please, see [API Doc > `launchAR()`](https://github.com/Tazaf/ionicitude/wiki/API-Doc#launchar) for the complete details about this method._
 
 ----------
 
