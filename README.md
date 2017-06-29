@@ -1,4 +1,4 @@
-![Ionicitude logo](https://github.com/Tazaf/ionicitude/blob/master/docs/img/logo_min.png)
+![Ionicitude logo](https://github.com/Tazaf/ionicitude/blob/master/docs/logo_min.png)
 
 # Ionicitude
 
