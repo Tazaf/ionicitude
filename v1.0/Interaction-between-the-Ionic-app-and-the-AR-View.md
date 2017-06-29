@@ -1,3 +1,5 @@
+# Interaction between the Ionic app and the AR view
+
 ## Important explanations ahead!
 
 It's very important to understand that when the Wikitude plugin launches an AR View, it does not so in the context of your Ionic App. It creates a completely new, independant, agnostic WebView, that comes over your Ionic App WebView (check the following diagram). This means that all your data, scopes, services, controllers or whatever your app is using are complete strangers for the AR View.

@@ -2,9 +2,43 @@
 ---
 
 @import "{{ site.theme }}";
+@import "large-screen.scss";
 
 #logo {
-  margin-right: 30px;
   position: relative;
   top: 5px;
+}
+#sidebar > hr, #sidebar > p {
+  display: none;
+}
+#verlist {
+  li:first-child::after {
+    content: ' (latest)'
+  }
+}
+#wrapper {
+  display: flex;
+}
+main {
+  flex: 1;
+  overflow: auto;
+}
+aside {
+  flex: 0 0 250px;
+  font-size: 0.9em;
+  margin-right: 4em;
+}
+#toc {
+  hr, p { display: none; }
+}
+ul, ol {
+  padding-left: 20px;
+}
+body {
+  .page-header {
+    text-align: initial;
+  }
+  .main-content {
+    margin: 0;
+  }
 }

@@ -1,9 +1,11 @@
-theme: jekyll-theme-architect
+theme: jekyll-theme-cayman
 title: Ionicitude
 description: AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 project:
   repository_url: https://github.com/Tazaf/ionicitude
   repository_name: ionicitude
+documentation:
+  repository_url: https://github.com/Tazaf/ionicitude/tree/gh-pages
 gems:
   - jemoji
 defaults:
@@ -11,5 +13,4 @@ defaults:
     scope:
       path: v1.0
     values:
-      layout: v1.0
       version: 1.0.x

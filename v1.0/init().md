@@ -1,3 +1,5 @@
+# init()
+
 **Must be called prior to any other Ionicitude's API call.**
 
 Initializes the Ionicitude Service, then returns it for you to chain methods calls, if necessary.
@@ -6,7 +8,7 @@ This initialization first loads up the Wikitude plugin, then sets up the Ionicit
 
 **Note that this method is designed to be called one time, and one time only. If you call it a second time, ~~you'll break the space-time continuum~~ nothing will happen.**
 
-# Arguments
+## Arguments
 You can change the method's default behavior or modify some of the service's settings by passing an **object** as the method's argument. This object can have the following properties, that are all optionnal:
 
 Name|Type|Description
@@ -17,10 +19,10 @@ reqFeatures|`ARRAY`|Default `['geo', '2d_tracking']`. An array of strings indica
 worldLoadConfig|`OBJECT`|Default `{camera_position: 'back'}`. An object of additionnal settings for the AR Views. For now only one setting is available, `camera_position`, that can be either `front` (to use the device front camera) or `back` (to use the device back camera).
 worldsRootFolder|`STRING`|Default `"wikitude-worlds"`. A string that references a folder's name in your app in which your AR Worlds' folders are stored (see [Expected File Organization](#expected-file-organization) for more information).
 
-# Returns
+## Returns
 - `OBJECT` - The Ionicitude Service.
 
-# Usage
+## Usage
 ```javascript
 // Full default usage
 Ionicitude.init();

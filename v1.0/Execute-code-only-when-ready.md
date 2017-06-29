@@ -1,3 +1,5 @@
+# Execute code only when ready
+
 Please note that `Ionicitude.init()` has some asynchronous behavior (especially while checking the device). This means that some of your code using Ionicitude could be executed before the initialization process is finished, resulting in potential error (see [issue #3](https://github.com/Tazaf/ionicitude/issues/3)).
 
 To ensure that the code using the module is executed only when Ionicitude has done initializing, you can use this method:

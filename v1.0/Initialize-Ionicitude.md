@@ -1,3 +1,5 @@
+# Initialize Ionicitude
+
 Before it can be used, the Ionicitude service needs to be initialized. This means loading the Wikitude plugin and setting up some default Ionicitude behavior. You can do this by calling this method:
 
 ```javascript

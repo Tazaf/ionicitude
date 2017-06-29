@@ -1,3 +1,5 @@
+# Checking device's features
+
 We already saw that an AR World can be geo-based or image-recognition-based, or both. The device that wants to launch such AR World must support whatever features it requires, and the Wikitude plugin must know wether or not the device supports said features.
 
 This can be done with this method:

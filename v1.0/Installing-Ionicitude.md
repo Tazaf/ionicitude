@@ -1,3 +1,5 @@
+# Installing Ionicitude
+
 OK :ok_hand: ! Now that you have successfully installed the cordova Wikitude plugin (right?), it's time to install Ionicitude, in order to manipulate this freshly installed cordova plugin. To install ionicitude, you have several choices.
 
 ## 1a. With `ionic add` _(recommanded)_
@@ -43,7 +45,9 @@ $> npm install --save ionicitude
 The plugin will then be available in your app's `node_modules` folder, and the `.js` files are located on the `dist` subfolder.
 
 ### Copy the file
-But this is not enough ! In order to use Ionicitude in your code, its file(s) must be in the `www` folder of your project (or any of the subfolder). **Ionic has a special folder for this kind of plugin and this is the `www/lib` folder.**
+But this is not enough! In order to use Ionicitude in your code, its file(s) must be in the `www` folder of your project (or any of the subfolder).
+
+**Ionic has a special folder for this kind of plugin and this is the `www/lib` folder.**
 
 You could do this by hand, but the NPM package of Ionicitude comes with a script **that copies the necesseray files from the plugin and paste them in a new `ionicitude` folder right inside the `www/lib` folder**. To execute this script, type the following command:
 

@@ -1,7 +1,10 @@
+# captureScreen()
+
 _This is a wrapper around the Wikitude plugin's captureScreen function but it implements promises instead of callbacks. See [Official Doc](http://www.wikitude.com/external/doc/documentation/latest/phonegap/referencephonegap.html#capturescreen) for more information._
 
 Allows you to take a screenshot of the currently active AR View.
 ## Arguments
+
 Name|Type|Description
 ----|----|-----------
 withUI|`BOOLEAN`|Indicates wether or not the AR View UI should be part of the screenshot.

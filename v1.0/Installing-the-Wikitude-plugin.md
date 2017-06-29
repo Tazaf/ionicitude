@@ -1,3 +1,5 @@
+# Installing the Wikitude plugin
+
 :exclamation: **This package DOES NOT come along with the cordova Wikitude plugin!**
 
 Since Ionicitude is a service that uses the cordova Wikitude plugin, you'll need to first install the plugin on your project. Do it with the following command (that can take a while: it's a heavy plugin):
