@@ -14,3 +14,8 @@ defaults:
       path: v1.0
     values:
       version: 1.0.x
+  -
+    scope:
+      path: v1.1
+    values:
+      version: 1.1.x

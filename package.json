@@ -1,0 +1,11 @@
+{
+  "name": "ionicitude-documentation",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "js-yaml": "^3.8.4"
+  },
+  "scripts": {
+    "new-version": ""
+  }
+}
