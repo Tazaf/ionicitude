@@ -5,7 +5,7 @@
   "devDependencies": {
     "js-yaml": "^3.8.4"
   },
-  "scripts": {
-    "new-version": ""
+  "bin": {
+    "new-version": "./bin/new-version"
   }
 }
