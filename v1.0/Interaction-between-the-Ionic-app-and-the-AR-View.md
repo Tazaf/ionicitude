@@ -4,7 +4,7 @@
 
 It's very important to understand that when the Wikitude plugin launches an AR View, it does not so in the context of your Ionic App. It creates a completely new, independant, agnostic WebView, that comes over your Ionic App WebView (check the following diagram). This means that all your data, scopes, services, controllers or whatever your app is using are complete strangers for the AR View.
 
-![New AR View - Diagram](https://github.com/Tazaf/ionicitude/blob/master/docs/new-ar-view.jpg)
+![New AR View - Diagram](/assets/images/new-ar-view.jpg)
 
 To overcome this, the Wikitude staff added some callback mechanism for the two WebViews to communicate, much like a basic client/server architecture, the AR View being the client, and your app being the server.
 
@@ -17,19 +17,24 @@ Remember when I said earlier that an AR World is ultimately juste HTML/CSS/JS fi
 document.location = 'architectsdk://foo?bar';
 ```
 
-... that's the signal for the AR View that it needs to call a previsouly registered callback function on the Ionic App (more on that [later](https://github.com/Tazaf/ionicitude/wiki/Ionicitude-Callback-Handling-Mechanism-(CHM))), and pass it the URL _(the value of `document.location`)_ as a String argument.
+... that's the signal for the AR View that it needs to call a previsouly registered callback function on the Ionic App (more on that [later](Ionicitude-Callback-Handling-Mechanism-(CHM))), and pass it the URL _(the value of `document.location`)_ as a String argument.
 
-![Callback Function](https://github.com/Tazaf/ionicitude/blob/master/docs/callback-function.jpg)
+![Callback Function](/assets/images/callback-function.jpg)
 
 This previsouly registered callback function is then responsible of analyzing, interpreting and executing whatever it's asked to do by the URL.
 
-Thankfully, Ionicitude provides you with it's own callback handling mechanism, so you wouldn't have to worry about that. But you can still set up your own mechanism, if you want. Please, see [Ionicitude Callback Handling Mechanism](https://github.com/Tazaf/ionicitude/wiki/Ionicitude-Callback-Handling-Mechanism-(CHM)) for more details.
+Thankfully, Ionicitude provides you with it's own callback handling mechanism, so you wouldn't have to worry about that. But you can still set up your own mechanism, if you want.
+
+----------
+_Please, see [Ionicitude CHM](Ionicitude-Callback-Handling-Mechanism-(CHM)) for more details._
+
+----------
 
 ### From: Ionic App, To: AR View
 If you want your Ionic App to trigger some behavior inside the AR View (in reaction to an AR View `document.location` call, for example), you can use `Ionicitude.callJavaScript()` _(mind the capital 'S')_ to do so.
 
 ----------
-_Please, see [API Doc > `callJavaScript()`](https://github.com/Tazaf/ionicitude/wiki/API-Doc#calljavascript) for details about this method._
+_Please, see [API Doc > `callJavaScript()`](callJavaScript()) for details about this method._
 
 ----------
 
