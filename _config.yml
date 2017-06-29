@@ -1,4 +1,4 @@
-theme: jekyll-theme-architect
+theme: jekyll-theme-cayman
 title: Ionicitude
 description: AngularJS module for using the Wikitude cordova plugin in an Ionic project.
 project:
