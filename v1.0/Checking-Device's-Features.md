@@ -42,7 +42,7 @@ Ionicitude.init({
   reqFeatures: ['image_tracking']
 });
 ```
-_Note that your device will always be checked for the 'image_tracking' feature. Since Wikitude is an augmented relatity plugin, it must be able to use your camera_
+_Note that your device will always be checked for the `image_tracking` feature. Since Wikitude is an augmented relatity plugin, it must be able to use your camera_
 
 :grey_exclamation: **Any string in `reqFeatures` that doesn't reference a valid Wikitude feature will not cause the check to fail. It will just be ignored.**
 
