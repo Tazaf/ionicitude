@@ -1,0 +1,59 @@
+const fs = require('fs')
+const updated = process.argv[3]
+const path = require('path')
+const git = require('simple-git')
+
+function badArg(arg) {
+  return arg !== 'minor' && arg !== 'major' && arg !== 'patch'
+}
+
+// Checking that we received proper argument
+if (badArg(updated)) throw new SyntaxError(`The new-version script expects one argument whose value is either 'patch', minor' or 'major'. '${updated}' received.`)
+
+try {
+  console.log('Creating a new Ionicitude version...')
+
+  const bowerPath = path.join(__dirname, '..', 'bower.json')
+  const npmPath = path.join(__dirname, '..', 'package.json')
+
+  // Retrieving the versions.yaml file
+  const npmConf = JSON.parse(fs.readFileSync(npmPath, 'utf8'))
+  const bowerConf = JSON.parse(fs.readFileSync(bowerPath, 'utf8'))
+  if (npmConf.version !== bowerConf.version) throw new Error(`The package.json version (${npmConf.version}) and bower.json version (${bowerConf.version}) are different. The new-version script expects them to be equal. Try fixing this manually before using this script again.`)
+
+  const latest = npmConf.version
+
+  console.log(`Latest version: ${latest}`)
+
+  const current = npmConf.version.split('.')
+
+  updated === 'major' && current[0]++
+  updated === 'minor' && current[1]++
+  updated === 'patch' && current[2]++
+
+  const newest = current.join('.')
+
+  console.log(`Newest version: ${newest}`)
+  console.log('')
+
+  npmConf.version = bowerConf.version = newest
+
+  console.log('Updating bower.json...')
+  fs.writeFileSync(bowerPath, JSON.stringify(bowerConf, null, 2))
+  console.log('Done!')
+  console.log('')
+
+  console.log('Updating package.json...')
+  fs.writeFileSync(npmPath, JSON.stringify(npmConf, null, 2))
+  console.log('Done!')
+  console.log('')
+
+  console.log('Creating a git commit...')
+  git().add(['bower.json', 'package.json'])
+    .commit(`Updating to version ${newest}`)
+    .addTag(`v${newest}`)
+  console.log('Done!')
+
+} catch (e) {
+  console.error(e);
+}

@@ -55,5 +55,8 @@
     "gulp-ng-annotate": "^2.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.1"
+  },
+  "scripts": {
+    "update": "node ./scripts/new-version -- "
   }
 }
