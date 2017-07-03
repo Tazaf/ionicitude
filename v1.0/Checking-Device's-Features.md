@@ -27,7 +27,7 @@ Ionicitude.init({
 As for now, there's only two features that an AR World can require:
 
 * `'geo'` - This feature is needed by an AR World when it wants to use the user's location and manipulates geodata in a general way.
-* `'2d_tracking` - This feature is needed by an AR World when it wants to use image recognition and/or image tracking.
+* `'image_tracking` - This feature is needed by an AR World when it wants to use image recognition and/or image tracking.
 
 By default, `checkDevice()` checks if the device supports both of these features, but if your app will ever use only one of them, you can tell that to Ionicitude when initializing the service by passing an object argument to `Ionicitude.init()` with at least a `reqFeatures` array property:
 
@@ -39,9 +39,10 @@ Ionicitude.init({
 
 // Your app only need image tracking and/or recognition ? Do...
 Ionicitude.init({
-  reqFeatures: ['2d_tracking']
+  reqFeatures: ['image_tracking']
 });
 ```
+_Note that your device will always be checked for the 'image_tracking' feature. Since Wikitude is an augmented relatity plugin, it must be able to use your camera_
 
 :grey_exclamation: **Any string in `reqFeatures` that doesn't reference a valid Wikitude feature will not cause the check to fail. It will just be ignored.**
 
