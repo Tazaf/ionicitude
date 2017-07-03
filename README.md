@@ -1,4 +1,4 @@
-![Ionicitude logo](https://github.com/Tazaf/ionicitude/blob/master/docs/logo_min.png)
+![Ionicitude logo](https://github.com/Tazaf/ionicitude/blob/master/docs/img/logo_min.png)
 
 # Ionicitude
 
@@ -20,11 +20,9 @@ A demo application that uses Ionicitude in an Ionic app can be found [here](http
 
 # Contribution and Issues
 
-Any contribution or enhancement to this Ionicitude Demo App are welcomed and will be appreciated.
+If you want to contribute to the project (_thank you!_) or are experiencing issue and want to report it (_thank you for that, too!_), please read and follow the instructions presented in the [contributing file](CONTRIBUTING.md) before doing so.
 
-If you experience bugs or strange behaviors will testing this app, please do not hesitate to raise an issue about it.
-
-**In both case, please, use the GitHub tools of this repository (merge request and issues) rather than sending a personnal email. This way, it will be easier to manage and keep track of what's happening. Thanks !**
+_Please, read the [code of conduct](CODE_OF_CONDUCT.md) and follow it before raising issues or commenting ones._
 
 # License
 This package is licensed under the MIT Licence. See [LICENCE.txt](https://github.com/Tazaf/ionicitude/blob/master/LICENSE.txt) or read the following text:
