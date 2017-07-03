@@ -74,11 +74,11 @@ function Ionicitude($q) {
 		 * Defines which features your AR app needs the device to support.
 		 * For now, only two features are available in the cordova WikitudePlugin.
 		 * The first one is 'geo' and is used for any ARchitect World that wants to rely on the user's location.
-		 * The second is '2d_tracking' and is used for any ARchitect World that wants to use image recognition and image tracking.
+		 * The second is 'image_tracking' and is used for any ARchitect World that wants to use image recognition and image tracking.
 		 * More information : http://www.wikitude.com/developer/documentation/phonegap.
 		 * @type {Array}
 		 */
-		reqFeatures: ['geo', '2d_tracking'],
+		reqFeatures: ['geo', 'image_tracking'],
 		/**
 		 * Defines where in your app are stored all your ARchitect World folders.
 		 * This folder should contain sub-folders, one for each of your AR World.
@@ -194,7 +194,7 @@ function Ionicitude($q) {
 	 * This object can have the following properties :
 	 * - customCallback: A function that you want to set as your app's Custom Handling Mechanism (CHM). If not provided, the Ionicitude's CHM will be used.
 	 * - doDeviceCheck: Default TRUE. Pass FALSE to skip the checkDevice() method call. If you do, you'll need to manually call the method later on.
-	 * - reqFeatures: An array of strings indicating which features are required by your app. Can be 'geo', '2d_tracking' or both.
+	 * - reqFeatures: An array of strings indicating which features are required by your app. Can be 'geo', 'image_tracking' or both.
 	 * - worldLoadConfig: An object of additionnals world load settings.
 	 * - worldsRootFolder: A string that references your app's folder in which your AR Worlds' folders are stored.
 	 * @param params An object to alter the init behavior or change default settings.
