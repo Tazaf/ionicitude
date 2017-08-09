@@ -1,25 +1,25 @@
 /**
  * Created by Mathias on 08.04.2016.
  */
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
-var ngAnnotate = require('gulp-ng-annotate');
-var header = require('gulp-header');
-var footer = require('gulp-footer');
-var addsrc = require('gulp-add-src');
+const gulp = require('gulp');
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
+const rename = require('gulp-rename');
+const ngAnnotate = require('gulp-ng-annotate');
+const header = require('gulp-header');
+const footer = require('gulp-footer');
+const addsrc = require('gulp-add-src');
 
-var distName = 'ionicitude';
-var start = ';(function(){\n"use strict";\n\n';
-var end = '})();';
+const distName = 'ionicitude';
+const start = ';(function(){\n"use strict";\n\n';
+const end = '})();';
 
-var files = [
+const files = [
 	'./src/setup.module.js',
 	'./src/ionicitude.service.js'
 ];
 
-var prodFolder = './dist';
+const prodFolder = './dist';
 
 /**
  * Builds a dist version of the module.
@@ -52,6 +52,4 @@ function compileTo(dest) {
 		.pipe(gulp.dest(dest));
 }
 
-gulp.task('default', function () {
-	return compileTo(prodFolder);
-});
+gulp.task('default', () => compileTo(prodFolder));
