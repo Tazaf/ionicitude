@@ -4,6 +4,14 @@ lib: true
 toc: false
 ---
 
+# Important Note
+
+**Due to a lack of time, I haven't been able to update this package in a long time.**
+
+**Thus the documentation can be a litlle outdated, specifically the parts refering to Ionic command or code (the Ionic CLI has heavily changed since the last time I worked on this project).**
+
+**I sincerely apologize for those of you who struggled installing or using this library.**
+
 # Introduction
 
 This package is designed for Ionic developers who wants to use the [cordova Wikitude plugin](http://www.wikitude.com/products/extensions/cordova-plugin-augmented-reality/) to add Augmented Reality (AR) in their app. It provides an Angular Service, named **Ionicitude**, with a simple API to interact with the cordova plugin, wether it be setting it, launching it or handling the AR Views' requests (more about in the documentation).
