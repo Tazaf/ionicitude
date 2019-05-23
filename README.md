@@ -12,6 +12,8 @@ This bower package is designed for Ionic developers that wants to use the [cordo
 # Disclaimer
 **Please note that this project is not developped in association with or related to neither the Ionic team nor the Wikitude team.**
 
+**Update of 6th July 2018: Please also not that I haven't been able, due to a lack of time, to update and properly maintain the library. It's still usable, but the documentation might be a little outdated.**
+
 # Documentation
 The documentation for this project can be found on [the library website](http://tazaf.github.io/ionicitude/), while it's source is located on [the `gh-pages` branch](https://github.com/Tazaf/ionicitude/tree/gh-pages) of this repo.
 
