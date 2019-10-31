@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/Tazaf/ionicitude#readme",
   "dependencies": {
-    "angular": "1.4.x",
+    "angular": "1.7.x",
     "copy": "^0.3.0",
     "rmdir": "^1.2.0"
   },
